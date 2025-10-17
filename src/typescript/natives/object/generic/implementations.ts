@@ -1,9 +1,10 @@
 import { Function } from "@tsn-function/generic/types";
-import { AnyValue, Nullable } from "@tsi/types";
+import { AnyValue, Nullable } from "@ts/types";
 import { ConcatStrIntoKeys, CustomReturn, EntriesReturn, KeysOfType, Object, RemoveCicularReferences } from "./types";
 import { KeyOf } from "./types.native";
 import { _String } from "@tsn-string/generic/implementations";
 import { AnyClass } from "@tsn-class/generic/types";
+import { isNull } from "@ts/implementations";
 
 
 export function isEmptyObj(obj: Object): obj is {} {
@@ -13,7 +14,7 @@ export function isEmptyObj(obj: Object): obj is {} {
 	return true;
 }
 
-function removeCircularReferences(): RemoveCicularReferences {
+export function circularReferenceHandler(): RemoveCicularReferences {
   const seen = new Set();
   return function(key: string, value: any): any {
     if (value !== null && typeof value === 'object') {
@@ -24,28 +25,6 @@ function removeCircularReferences(): RemoveCicularReferences {
     }
     return value;
   };
-}
-
-function isNull<T>(value: Nullable<T>, ...customNullValues: any[]): value is Nullable<null> {
-  const negatedValues = [0, '', false] as typeof value[];
-  const jsonNullValues: string[] = customNullValues.map((v: any): string=> json(v));
-  return (
-    jsonNullValues.includes(json(value)) ?
-      true :
-      !negatedValues.includes(value) && !value
-  );
-}
-
-function isNullOrUndefined<T>(value: Nullable<T>): value is Nullable<null> {
-  return value == null || value == undefined;
-}
-
-function equals(a: any, b: any, ...customNullValues: any[]): boolean {
-  let result: boolean = isNull(a, ...customNullValues) && isNull(b, ...customNullValues);
-  if (!result) {
-    result = json(a) == json(b);
-  }
-  return result;
 }
 
 function makeObjectBasedOn<T extends (AnyClass|AnyValue)>(value: T): T {
@@ -85,10 +64,6 @@ function copyValue<T extends (AnyClass|AnyValue), Prefix extends Nullable<string
   }
   copiedValue = addPrefixToKeys(copiedValue, prefixOnKeys);
   return copiedValue;
-}
-
-function json(obj: any): string {
-  return JSON.stringify(obj, removeCircularReferences());
 }
 
 function getValueFromPath(obj: any, path: string): any {
@@ -135,15 +110,11 @@ function isAClassDeclaration<T>(obj: any): obj is AnyClass<T> & T {
 
 export const _Object = {
   isEmptyObj,
-	isNull,
-	isNullOrUndefined,
 	isAClassDeclaration,
-	removeCircularReferences,
-	equals,
+	circularReferenceHandler,
 	makeObjectBasedOn,
 	addPrefixToKeys,
 	copyValue,
-	json,
 	getValueFromPath,
 	setValueFromPath,
 	removeNullFields,

@@ -29,6 +29,9 @@ type IAnyValue<T=any> = T & Object
 
 type IIs<T,U> = Extract<T,U> extends never ? false : true;
 
+const _typeof = typeof '';
+type ITypeOf = typeof _typeof;
+
 export { 
   INever as Never, 
   INullable as Nullable,
@@ -37,4 +40,5 @@ export {
   IAnyType as AnyType,
   IAnyValue as AnyValue,
   IIs as Is,
+  ITypeOf as TypeOf
 }

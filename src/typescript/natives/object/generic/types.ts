@@ -1,6 +1,6 @@
 import { Function } from "@tsn-function/generic/types";
 import { Pair } from "@tsn-array/generic/types";
-import { Extends } from "@tsi/types";
+import { Extends } from "@ts/types";
 import { KeyOf, Pick } from "./types.native";
 
 type ICommonFields<T, U> = Pick<T, Extract<keyof T, keyof U>>;

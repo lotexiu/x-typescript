@@ -17,9 +17,10 @@ type ProxyOptions<T> = {
 			onChanges?: (property: Property<T[K]>) => void;
 			onSet?: (value: any) => void;
 			onGet?: (value: any) => any;
+			options?: ProxyOptions<T[K]>;
 		}
 	}
-} 
+}
 
 export {
 	Property,

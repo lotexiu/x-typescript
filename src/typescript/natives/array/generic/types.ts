@@ -1,4 +1,4 @@
-import { Never } from "@tsi/types";
+import { Never } from "@ts/types";
 
 /**
  * Returns the first element of an array.
