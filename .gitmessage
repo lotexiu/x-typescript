@@ -1,0 +1,41 @@
+# <types> (<scope>): <subject>
+# [Example: feat(typescript): add generic array utilities]
+----------------------
+# Reason of your code change [Example: Added "A" to solve problem "B".]
+----------------------
+# Detailed description of your code
+# - What was changed?
+# - Why was it changed?
+# - How to simulate the problem?
+# - How to test your code?
+----------------------
+# --- COMMIT END ---
+
+# TYPES:
+# feat: New feature
+# fix: Bug fix
+# docs: Documentation changes
+# style: Formatting (no code change)
+# rftr: Code refactoring
+# test: Adding or modifying tests
+# revert: Revert previous commit or changes
+
+# SCOPES:
+# Its one of the contexts of your project, for example: 
+# typescript: Core TypeScript features
+# react: React features
+# react-native: React Native features
+# angular: Angular features
+# types: Types and interfaces
+# utils: Utilities
+# etc..
+
+# TITLE COMMIT EXAMPLE:
+
+# feat(typescript): add generic array utilities
+# fix(react): fix ReactComponent typing
+# docs(readme): update installation instructions
+# style(types): format codebase with Prettier
+# rftr(types): reorganize interfaces structure
+# test(utils): add tests for string utilities
+# revert: revert commit abc1234
