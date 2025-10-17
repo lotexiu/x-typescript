@@ -23,7 +23,3 @@ yarn-error.log*
 # Environment
 .env
 .env.local
-
-# Lock files
-package-lock.json
-yarn.lock
