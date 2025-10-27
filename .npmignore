@@ -1,0 +1,11 @@
+node_modules/
+docs/
+src/
+.releaserc.json
+.commitlintrc.json
+.editorconfig
+.vscode/
+.idea/
+.gitmessage
+.DS_Store
+*.log
