@@ -1,25 +1,37 @@
 {
+  "author": "lotexiu",
   "name": "x-typescript",
   "version": "0.2.1-alpha.0",
   "description": "א TypeScript - All your TypeScript needs in one package",
-  "keywords": [
-    "typescript",
-    "library"
-  ],
-  "author": "",
   "license": "MIT",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lotexiu/x-typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/lotexiu/x-typescript/issues"
+  },
+  "homepage": "https://github.com/lotexiu/x-typescript#readme",
+  "keywords": [
+    "library",
+    "typescript",
+    "react",
+    "react-native",
+    "nextjs",
+    "angular",
+    "sass"
   ],
   "exports": {
     "./*": {
       "import": "./dist/*.js",
       "types": "./dist/*.d.ts"
+    }
+  },
+  "exposeFiles": {
+    "./scss/*": {
+      "sass": [
+        "./dist/scss/*.scss"
+      ]
     }
   },
   "scripts": {
@@ -54,5 +66,10 @@
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vite-plugin-dts": "^4.5.4"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "dependencies": {
+    "glob": "^11.0.3"
   }
 }

@@ -3,7 +3,6 @@
 @use "sass:color" as *;
 @use "sass:string" as *;
 @use "sass:meta" as *;
-@use "@angular/material" as mat;
 
 /// Gera uma lista de seletores CSS concatenados
 /// @param {List} $args - Lista variável de seletores CSS
