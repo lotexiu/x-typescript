@@ -26,5 +26,3 @@ export function ReactWrapper<T extends Constructor<any>>(ComponentClass: T): Wra
 		return newClassInstance.render();
 	})
 }
-
-import './test.scss';
