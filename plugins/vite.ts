@@ -33,12 +33,10 @@ export function ExcludeSASSPProcessPlugin(srcDir: string): PluginOption {
   }
 }
 
-export function updateExport(pkg: any) {
+export function updateExport(pkg: any, build: ResolvedBuildOptions) {
   const { exports: exportValue = {}, exposeFiles = {} } = pkg;
 
   for (const [exposeKey, exposePatterns] of Object.entries(exposeFiles)) {
-    const finalEntry: Record<string, string> = {};
-
     for (const [type, patterns] of Object.entries(exposePatterns as Record<string, string[]>)) {
       for (const pattern of patterns) {
         const matchedFiles = globSync(pattern);
@@ -46,10 +44,14 @@ export function updateExport(pkg: any) {
           throw new Error(`The expose key "${exposeKey}" does not support multiple files. Please use "*" in the key to expose multiple files.`);
         }
         for (const file of matchedFiles) {
-          const relativePath = path.relative(process.cwd(), file).replace(/\\/g, "/");
+          let relativePath: string = path.relative(process.cwd(), file).replace(/\\/g, "/");
           const exposePath = exposeKey.replace("*", path.basename(file, path.extname(file)));
           if (exportValue[exposePath]) {
             throw new Error(`Already exists an export entry for ${exposePath}`);
+          }
+          const relativePathFromOutDir = path.relative(build.outDir, relativePath);
+          if (!relativePathFromOutDir.startsWith("..")) {
+            relativePath = relativePathFromOutDir;
           }
           exportValue[exposePath] = {};
           exportValue[exposePath][type] = `./${relativePath}`;
@@ -90,7 +92,7 @@ export function  CopyAndModifyPackageJsonPlugin(deleteKeys: string[] = DEFAULT_D
       }
 
       const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-      updateExport(pkg);
+      updateExport(pkg, build);
 
       deleteKeys.forEach((key) => { delete pkg[key]; });
       const distPackageJsonPath = path.join(build.outDir, "package.json");
