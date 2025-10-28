@@ -32,6 +32,39 @@ export function excludeScssPreprocess(srcDir: string): PluginOption {
   };
 }
 
+export function copyAllScss(srcDir: string): PluginOption {
+  function getAllScssFiles(dir: string): string[] {
+    const files = fs.readdirSync(dir);
+    let result: string[] = [];
+    for (const file of files) {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        result = result.concat(getAllScssFiles(fullPath));
+      } else if (file.endsWith(".scss") || file.endsWith(".sass")) {
+        result.push(fullPath);
+      }
+    }
+    return result;
+  }
+
+  return {
+    name: 'copy-all-scss',
+    async writeBundle(options) {
+      const scssFiles = getAllScssFiles(srcDir);
+      await Promise.all(
+        scssFiles.map(file => {
+          const relativePath = path.relative(srcDir, file);
+          const destPath = path.resolve(options.dir!, relativePath);
+          fs.mkdirSync(path.dirname(destPath), { recursive: true });
+          return fs.promises.copyFile(file, destPath);
+        })
+      );
+    },
+  };
+}
+
+
 function getAllTSFiles(dir: string): string[] {
   const files = fs.readdirSync(dir);
   let tsFiles: string[] = [];
@@ -45,21 +78,6 @@ function getAllTSFiles(dir: string): string[] {
     }
   }
   return tsFiles;
-}
-
-function getAllFilesWithExt(dir: string, ext: string): string[] {
-  const files = fs.readdirSync(dir);
-  let result: string[] = [];
-  for (const file of files) {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
-    if (stat.isDirectory()) {
-      result = result.concat(getAllFilesWithExt(fullPath, ext));
-    } else if (file.endsWith(ext)) {
-      result.push(fullPath);
-    }
-  }
-  return result;
 }
 
 function extractTsconfigAliases() {
@@ -87,6 +105,7 @@ export default defineConfig({
       insertTypesEntry: false,
     }),
     excludeScssPreprocess(path.resolve(__dirname, "src")),
+    copyAllScss(path.resolve(__dirname, "src")),
   ],
   resolve: { alias: aliases },
   build: {

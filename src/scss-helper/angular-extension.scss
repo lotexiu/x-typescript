@@ -1,0 +1,58 @@
+﻿@use "utils"  as *;
+@use "map" as *;
+@use "color" as *;
+
+@mixin betterIcons($defaultSize: 14px, $theme) {
+  $primary: get($theme, primary, 50);
+  $primary-font: if(isLight($primary), black, white);
+  $font: if(get($theme, type) == light, black, white);
+  $background: if(get($theme, type) == light, white, mix(invert($font), $font 20%));
+
+  $secondary: get($theme, secondary, 50);
+  $tertiary: get($theme, tertiary, 50);
+  $neutral: get($theme, neutral, 50);
+  $error: get($theme, error, 50);
+
+  .material-icons{
+    font-size: $defaultSize;
+  }
+  
+  mat-icon.mat-icon{
+    min-width: $defaultSize;
+    width: $defaultSize;
+    height: $defaultSize;
+    margin: 4px;
+    // display: flex;
+    // flex-direction: column;
+
+
+    border: none;
+    outline: none;
+
+    transition: 
+      transform 0.35s allow-discrete,
+      color 0.2s allow-discrete;
+
+    &.clickable {
+      &:focus,
+      &:hover {
+        transform: scale(1.1); //rotate(360deg);
+      }
+      &:hover,
+      &:focus,
+      &:active {
+        color: $secondary;
+  
+        &.terciary-color {
+          color: $tertiary;
+        }
+        &.neutral-color {
+          color: $neutral;
+        }
+        &.error-color {
+          color: $error;
+        }
+      }
+    }
+  }
+}

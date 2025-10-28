@@ -1,0 +1,42 @@
+@use 'utils' as *;
+@use 'math' as *;
+
+
+@mixin setHeight($type, $unit) {
+  #{attrContains(height, '&$', #{$unit}#{$type})} {
+    height: #{$unit}#{$type};
+  }
+  #{attrContains(height, '&$', min#{$unit}#{$type})} {
+    min-height: #{$unit}#{$type};
+  }
+  #{attrContains(height, '&$', max#{$unit}#{$type})} {
+    max-height: #{$unit}#{$type};
+  }
+}
+
+@mixin HeightStructure($min: 0%, $default: max-content, $max: 100%) {
+  * {
+    &:has(>[height-father]){
+      &:has(>#{attrContains(height-father, '&$', 'max100%')}) {
+        max-height: 100%;
+      }
+    }
+  } 
+
+  [height] {
+
+    @include setHeight('', 'max-content');
+    @include setHeight('','none');
+
+    /* (0, 50, 100, 150, ...) */
+    @each $i in valuesFromSteps(50, 0, 20) {
+      @include setHeight('px', $i);
+    }
+    /* (0, 5, 10, 15, ...) */
+    @each $i in valuesFromSteps() {
+      @include setHeight('%', $i);
+      @include setHeight('vh', $i);
+      @include setHeight('vw', $i);
+    }
+  }
+}

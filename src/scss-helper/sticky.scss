@@ -1,0 +1,39 @@
+@mixin StickyStructure() {
+  * {
+    &:has([sticky]) {
+      // border-radius: 5px;
+    }
+  }
+
+  [sticky]:not(table) {
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    // &::after {
+    //   content: "";
+    //   position: absolute;
+    //   inset: 0;
+    //   z-index: -1;
+    //   border-radius: 5px;
+    //   background: rgba(0, 0, 0, 0.3);
+    //   mask: linear-gradient(to top, transparent, black 50%);
+    //   backdrop-filter: blur(3px);
+    // }
+
+    &[sticky~="bottom"] {
+      // mask: linear-gradient(to bottom, transparent, black 50%);
+      top: auto;
+      bottom: 0;
+    }
+    &[sticky~="left"] {
+      // mask: linear-gradient(to left, transparent, black 50%);
+      top: auto;
+      left: 0;
+    }
+    &[sticky~="right"] {
+      // mask: linear-gradient(to right, transparent, black 50%);
+      top: auto;
+      right: 0;
+    }
+  }
+}

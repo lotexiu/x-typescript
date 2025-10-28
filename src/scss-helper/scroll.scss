@@ -1,0 +1,29 @@
+@use 'color' as *;
+
+@mixin simpleScroll($track, $thumb, $verticalSize: 8px, $horizontalSize: 8px) {
+  scroll-snap-type: both proximity;
+  scroll-snap-stop: always;
+
+  &::-webkit-scrollbar {
+    width: $verticalSize;
+    height: $horizontalSize;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: mix($track 10%, transparent);
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: mix($thumb 50%, $track 30%, transparent 10% );
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background: mix($thumb 100%);
+  }
+}

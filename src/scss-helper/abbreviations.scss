@@ -1,0 +1,15 @@
+@use 'utils' as *;
+@use 'math' as *;
+
+@mixin AbbreviationsStructure() {
+  .flex {
+    display: flex;
+
+    &-c{
+      flex-flow: row;
+    }
+    &-r{
+      flex-flow: column;
+    }
+  }
+}

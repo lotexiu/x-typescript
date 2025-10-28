@@ -1,0 +1,35 @@
+@use "sass:math";
+@use "list" as *;
+
+@function percentage($value) {
+  @return math.percentage($value);
+}
+
+@function div($a, $b) {
+  @return math.div($a, $b);
+}
+
+@function toPercent($value) {
+  @return $value * 1%;
+}
+
+@function toPixel($value) {
+  @return #{$value}px;
+}
+
+@function toVH($value) {
+  @return #{$value}vh;
+}
+
+@function toVW($value) {
+  @return #{$value}vw;
+}
+
+@function valuesFromSteps($steps: 5, $min: 0, $max: 20) {
+  $values: ();
+  @for $i from $min through $max {
+    $value: $i * $steps;
+    $values: append($values, $value);
+  }
+  @return $values;
+}

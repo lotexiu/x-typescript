@@ -1,0 +1,374 @@
+{
+  "map.get": {
+    "prefix": "map.get",
+    "body": "map.get(${1:$map}, ${2:key})",
+    "description": "Obtém valor de um map"
+  },
+  "map.has-key": {
+    "prefix": "map.has-key",
+    "body": "map.has-key(${1:$map}, ${2:key})",
+    "description": "Verifica se existe uma chave no map"
+  },
+  "map.merge": {
+    "prefix": "map.merge",
+    "body": "map.merge(${1:$map1}, ${2:$map2})",
+    "description": "Mescla dois maps"
+  },
+  "map.remove": {
+    "prefix": "map.remove",
+    "body": "map.remove(${1:$map}, ${2:$keys...})",
+    "description": "Remove chaves de um map"
+  },
+  "map.set": {
+    "prefix": "map.set",
+    "body": "map.set(${1:$map}, ${2:$key}, ${3:$value})",
+    "description": "Define um valor para uma chave no map"
+  },
+  "map.deep-merge": {
+    "prefix": "map.deep-merge",
+    "body": "map.deep-merge(${1:$map1}, ${2:$map2})",
+    "description": "Mescla dois maps recursivamente"
+  },
+  "map.deep-remove": {
+    "prefix": "map.deep-remove",
+    "body": "map.deep-remove(${1:$map}, ${2:$keys...})",
+    "description": "Remove chaves aninhadas de um map"
+  },
+  "map.keys": {
+    "prefix": "map.keys",
+    "body": "map.keys(${1:$map})",
+    "description": "Retorna lista de chaves do map"
+  },
+  "map.values": {
+    "prefix": "map.values",
+    "body": "map.values(${1:$map})",
+    "description": "Retorna lista de valores do map"
+  },
+  "mixin": {
+    "prefix": "mix",
+    "body": [
+      "@mixin ${1:name}(${2:$args}) {",
+      "\t${3:content}",
+      "}"
+    ],
+    "description": "Cria um mixin SCSS"
+  },
+  "include": {
+    "prefix": "inc",
+    "body": "@include ${1:mixin-name}(${2:args});",
+    "description": "Inclui um mixin"
+  },
+  "math.div": {
+    "prefix": "math.div",
+    "body": "math.div(${1:number}, ${2:divisor})",
+    "description": "Divisão matemática"
+  },
+  "media query": {
+    "prefix": "med",
+    "body": [
+      "@media (${1:min-width}: ${2:768px}) {",
+      "\t${3:content}",
+      "}"
+    ],
+    "description": "Media query"
+  },
+  "math.abs": {
+    "prefix": "math.abs",
+    "body": "math.abs(${1:number})",
+    "description": "Retorna o valor absoluto de um número"
+  },
+  "math.acos": {
+    "prefix": "math.acos",
+    "body": "math.acos(${1:number})",
+    "description": "Retorna o arco cosseno de um número"
+  },
+  "math.asin": {
+    "prefix": "math.asin",
+    "body": "math.asin(${1:number})",
+    "description": "Retorna o arco seno de um número"
+  },
+  "math.atan": {
+    "prefix": "math.atan",
+    "body": "math.atan(${1:number})",
+    "description": "Retorna o arco tangente de um número"
+  },
+  "math.atan2": {
+    "prefix": "math.atan2",
+    "body": "math.atan2(${1:$y}, ${2:$x})",
+    "description": "Retorna o arco tangente de dois números"
+  },
+  "math.ceil": {
+    "prefix": "math.ceil",
+    "body": "math.ceil(${1:number})",
+    "description": "Arredonda um número para cima"
+  },
+  "math.cos": {
+    "prefix": "math.cos",
+    "body": "math.cos(${1:number})",
+    "description": "Retorna o cosseno de um número"
+  },
+  "math.floor": {
+    "prefix": "math.floor",
+    "body": "math.floor(${1:number})",
+    "description": "Arredonda um número para baixo"
+  },
+  "math.hypot": {
+    "prefix": "math.hypot",
+    "body": "math.hypot(${1:$numbers...})",
+    "description": "Retorna a hipotenusa de números"
+  },
+  "math.log": {
+    "prefix": "math.log",
+    "body": "math.log(${1:number})",
+    "description": "Retorna o logaritmo natural de um número"
+  },
+  "math.max": {
+    "prefix": "math.max",
+    "body": "math.max(${1:$numbers...})",
+    "description": "Retorna o maior número"
+  },
+  "math.min": {
+    "prefix": "math.min",
+    "body": "math.min(${1:$numbers...})",
+    "description": "Retorna o menor número"
+  },
+  "math.pow": {
+    "prefix": "math.pow",
+    "body": "math.pow(${1:$base}, ${2:$exponent})",
+    "description": "Retorna a potência de um número"
+  },
+  "math.round": {
+    "prefix": "math.round",
+    "body": "math.round(${1:number})",
+    "description": "Arredonda um número"
+  },
+  "math.sin": {
+    "prefix": "math.sin",
+    "body": "math.sin(${1:number})",
+    "description": "Retorna o seno de um número"
+  },
+  "math.sqrt": {
+    "prefix": "math.sqrt",
+    "body": "math.sqrt(${1:number})",
+    "description": "Retorna a raiz quadrada de um número"
+  },
+  "math.tan": {
+    "prefix": "math.tan",
+    "body": "math.tan(${1:number})",
+    "description": "Retorna a tangente de um número"
+  },
+  "color.adjust": {
+    "prefix": "color.adjust",
+    "body": "color.adjust(${1:$color}, ${2:$kwargs...})",
+    "description": "Ajusta as propriedades de uma cor"
+  },
+  "color.alpha": {
+    "prefix": "color.alpha",
+    "body": "color.alpha(${1:$color})",
+    "description": "Retorna a opacidade de uma cor"
+  },
+  "color.change": {
+    "prefix": "color.change",
+    "body": "color.change(${1:$color}, ${2:$kwargs...})",
+    "description": "Altera as propriedades de uma cor"
+  },
+  "color.complement": {
+    "prefix": "color.complement",
+    "body": "color.complement(${1:$color})",
+    "description": "Retorna a cor complementar"
+  },
+  "color.darken": {
+    "prefix": "color.darken",
+    "body": "color.darken(${1:$color}, ${2:$amount})",
+    "description": "Escurece uma cor"
+  },
+  "color.desaturate": {
+    "prefix": "color.desaturate",
+    "body": "color.desaturate(${1:$color}, ${2:$amount})",
+    "description": "Desatura uma cor"
+  },
+  "color.fade-in": {
+    "prefix": "color.fade-in",
+    "body": "color.fade-in(${1:$color}, ${2:$amount})",
+    "description": "Aumenta a opacidade de uma cor"
+  },
+  "color.fade-out": {
+    "prefix": "color.fade-out",
+    "body": "color.fade-out(${1:$color}, ${2:$amount})",
+    "description": "Diminui a opacidade de uma cor"
+  },
+  "color.grayscale": {
+    "prefix": "color.grayscale",
+    "body": "color.grayscale(${1:$color})",
+    "description": "Converte uma cor para escala de cinza"
+  },
+  "color.hue": {
+    "prefix": "color.hue",
+    "body": "color.hue(${1:$color})",
+    "description": "Retorna o matiz de uma cor"
+  },
+  "color.invert": {
+    "prefix": "color.invert",
+    "body": "color.invert(${1:$color})",
+    "description": "Inverte uma cor"
+  },
+  "color.lighten": {
+    "prefix": "color.lighten",
+    "body": "color.scale(${1:$color}, $lightness: ${2:$amount})",
+    "description": "Clareia uma cor (depreciado: use color.scale)"
+  },
+  "color.mix": {
+    "prefix": "color.mix",
+    "body": "color.mix(${1:$color1}, ${2:$color2}, ${3:$weight})",
+    "description": "Mistura duas cores"
+  },
+  "color.opacify": {
+    "prefix": "color.opacify",
+    "body": "color.opacify(${1:$color}, ${2:$amount})",
+    "description": "Aumenta a opacidade de uma cor"
+  },
+  "color.saturate": {
+    "prefix": "color.adjust",
+    "body": "color.adjust(${1:$color}, $saturation: ${2:$amount})",
+    "description": "Satura uma cor (depreciado: use color.adjust)"
+  },
+  "color.scale": {
+    "prefix": "color.scale",
+    "body": "color.scale(${1:$color}, ${2:$kwargs...})",
+    "description": "Escala as propriedades de uma cor"
+  },
+  "color.transparentize": {
+    "prefix": "color.transparentize",
+    "body": "color.transparentize(${1:$color}, ${2:$amount})",
+    "description": "Diminui a opacidade de uma cor"
+  },
+  "color.red": {
+    "prefix": "color.red",
+    "body": "color.channel(${1:$color}, \"red\", rgb)",
+    "description": "Retorna o canal vermelho de uma cor (depreciado: use color.channel)"
+  },
+  "color.green": {
+    "prefix": "color.green",
+    "body": "color.channel(${1:$color}, \"green\", rgb)",
+    "description": "Retorna o canal verde de uma cor (depreciado: use color.channel)"
+  },
+  "color.blue": {
+    "prefix": "color.blue",
+    "body": "color.channel(${1:$color}, \"blue\", rgb)",
+    "description": "Retorna o canal azul de uma cor (depreciado: use color.channel)"
+  },
+  "color.channel": {
+    "prefix": "color.channel",
+    "body": "color.channel(${1:$color}, ${2:$channel}, rgb)",
+    "description": "Retorna o canal especificado de uma cor"
+  },
+  "list.append": {
+    "prefix": "list.append",
+    "body": "list.append(${1:$list}, ${2:$value}, ${3:$separator})",
+    "description": "Adiciona um valor ao final de uma lista"
+  },
+  "list.index": {
+    "prefix": "list.index",
+    "body": "list.index(${1:$list}, ${2:$value})",
+    "description": "Retorna o índice de um valor na lista"
+  },
+  "list.is-bracketed": {
+    "prefix": "list.is-bracketed",
+    "body": "list.is-bracketed(${1:$list})",
+    "description": "Verifica se uma lista está entre colchetes"
+  },
+  "list.join": {
+    "prefix": "list.join",
+    "body": "list.join(${1:$list1}, ${2:$list2}, ${3:$separator}, ${4:$bracketed})",
+    "description": "Une duas listas"
+  },
+  "list.length": {
+    "prefix": "list.length",
+    "body": "list.length(${1:$list})",
+    "description": "Retorna o comprimento de uma lista"
+  },
+  "list.nth": {
+    "prefix": "list.nth",
+    "body": "list.nth(${1:$list}, ${2:$n})",
+    "description": "Retorna o enésimo valor de uma lista"
+  },
+  "list.separator": {
+    "prefix": "list.separator",
+    "body": "list.separator(${1:$list})",
+    "description": "Retorna o separador de uma lista"
+  },
+  "list.set-nth": {
+    "prefix": "list.set-nth",
+    "body": "list.set-nth(${1:$list}, ${2:$n}, ${3:$value})",
+    "description": "Define o enésimo valor de uma lista"
+  },
+  "list.slash": {
+    "prefix": "list.slash",
+    "body": "list.slash(${1:$list1}, ${2:$list2})",
+    "description": "Une duas listas com uma barra"
+  },
+  "list.zip": {
+    "prefix": "list.zip",
+    "body": "list.zip(${1:$lists...})",
+    "description": "Combina várias listas em uma lista de listas"
+  },
+  "control.if": {
+    "prefix": "if",
+    "body": [
+      "@if ${1:condition} {",
+      "\t${2:content}",
+      "}"
+    ],
+    "description": "Declaração @if"
+  },
+  "control.each": {
+    "prefix": "each",
+    "body": [
+      "@each ${1:$item} in ${2:$list} {",
+      "\t${3:content}",
+      "}"
+    ],
+    "description": "Declaração @each"
+  },
+  "control.for": {
+    "prefix": "for",
+    "body": [
+      "@for ${1:$i} from ${2:start} through ${3:end} {",
+      "\t${4:content}",
+      "}"
+    ],
+    "description": "Declaração @for"
+  },
+  "control.while": {
+    "prefix": "while",
+    "body": [
+      "@while ${1:condition} {",
+      "\t${2:content}",
+      "}"
+    ],
+    "description": "Declaração @while"
+  },
+  "at-extend": {
+    "prefix": "extend",
+    "body": "@extend ${1:selector};",
+    "description": "Extende um seletor"
+  },
+  "at-function": {
+    "prefix": "function",
+    "body": [
+      "@function ${1:name}(${2:$args}) {",
+      "\t${3:content}",
+      "}"
+    ],
+    "description": "Define uma função"
+  },
+  "at-mixin": {
+    "prefix": "mixin",
+    "body": [
+      "@mixin ${1:name}(${2:$args}) {",
+      "\t${3:content}",
+      "}"
+    ],
+    "description": "Define um mixin"
+  }
+}

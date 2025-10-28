@@ -1,0 +1,79 @@
+@use "sass:map";
+@use "meta" as *;
+
+/// Acessa valores em mapas aninhados
+/// @param {Map} $map - Mapa de dados
+/// @param {List} $keys - Lista de chaves para acessar o valor
+/// @return {*} Valor encontrado no mapa
+/// @example scss
+///   get((a: (b: 1)), 'a', 'b') => 1
+///
+@function get($map, $keys...) {
+  $value: $map;
+  @each $key in $keys {
+    $value: map.get($value, $key);
+  }
+  @return $value;
+}
+
+/// Define um valor em um mapa
+/// @param {Map} $map - Mapa original
+/// @param {*} $key - Chave a ser definida
+/// @param {*} $value - Valor a ser definido
+/// @return {Map} Novo mapa com o valor definido
+@function set($map, $key, $value) {
+  @return map.set($map, $key, $value);
+}
+
+/// Cria um novo mapa com as chaves especificadas
+/// @param {List} $keys - Lista de chaves para o mapa
+/// @return {Map} Novo mapa com as chaves definidas como null
+@function map($keys...) {
+  $map: ();
+  @each $key in $keys {
+    $map: map.merge($map, ($key: null));
+  }
+  @return $map;
+}
+
+/// Retorna uma lista com todas as chaves do mapa
+/// @param {Map} $map - Mapa para extrair as chaves
+/// @return {List} Lista contendo todas as chaves do mapa
+/// @example scss
+///   keys((a: 1, b: 2)) => (a, b)
+///
+@function keys($map) {
+  @return map.keys($map);
+}
+
+/// Retorna uma lista com todos os valores do mapa
+/// @param {Map} $map - Mapa para extrair os valores
+/// @return {List} Lista contendo todos os valores do mapa
+/// @example scss
+///   values((a: 1, b: 2)) => (1, 2)
+///
+@function values($map) {
+  @return map.values($map);
+}
+
+/// Une dois mapas em um único mapa
+/// @param {Map} $map1 - Primeiro mapa a ser unido
+/// @param {Map} $map2 - Segundo mapa a ser unido
+/// @return {Map} Novo mapa contendo a união dos mapas de entrada
+/// @example scss
+///   merge((a: 1), (b: 2)) => (a: 1, b: 2)
+///
+@function merge($map1, $map2) {
+  @return map.merge($map1, $map2);
+}
+
+/// Verifica se uma chave existe no mapa
+/// @param {Map} $map - Mapa a ser verificado
+/// @param {*} $key - Chave a ser procurada
+/// @return {Boolean} True se a chave existir, False caso contrário
+/// @example scss
+///   has-key((a: 1), a) => true
+///
+@function has-key($map, $key) {
+  @return map.has-key($map, $key);
+}

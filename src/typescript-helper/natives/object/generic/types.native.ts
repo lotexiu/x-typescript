@@ -65,7 +65,7 @@ type IKeyOf<T=any, KeyType=null> = KeyType extends null ? keyof T : Extract<keyo
  */
 type _IPartial<T> = Partial<T>;
 
-export {
+export type {
   _IRequired as Required,
   _IReadonly as Readonly,
   _IPick as Pick,

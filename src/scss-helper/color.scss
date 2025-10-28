@@ -1,0 +1,164 @@
+@use "sass:color";
+@use "map"  as *; 
+@use "list" as *;
+@use "meta" as *;
+@use "utils" as *;
+@use "math" as *;
+
+/// Mistura múltiplas cores
+/// @param {Map} $color1 [(black, 0%)] - Cor base com propriedades color e percent
+/// @param {List} $colors - Lista de cores adicionais para misturar
+/// @return {Color} Cor resultante da mistura
+/// @example scss
+///   mix(#ff0000, #0000ff, 50%) => #800080
+///
+@function mix($color1: (black, 0%), $colors...) {
+  $third: if(length($colors) == 2, nth($colors, 2), null);
+  @if $third != null and type-of($third) == "number" {
+    $second: nth($colors, 1);
+    @return color.mix($color1, $second, $third);
+  }
+  @else {
+    $result: $color1;
+    @each $color in $colors {
+      $result: color-mix(in srgb, $result, $color);
+    }
+    @return $result;
+  }
+  @return null;
+}
+
+/// Inverte uma cor
+/// @param {Color} $color - Cor a ser invertida
+/// @return {Color} Cor invertida
+/// @example scss
+///   invert(#ffffff) => #000000
+///
+@function invert($color) {
+  @return color.invert($color);
+}
+
+/// Multiplica duas cores RGB
+/// @param {Color} $rgb1 - Primeira cor RGB
+/// @param {Color} $rgb2 - Segunda cor RGB
+/// @return {Color} Nova cor RGB resultante da multiplicação
+/// @example scss
+///   multiply(#ff0000, #0000ff) => #000000
+///
+@function multiply($rgb1, $rgb2) {
+  $r: floor(div(channel($rgb1, "red", $space: rgb)    * channel($rgb2, "red", $space: rgb), 255));
+  $g: floor(div(channel($rgb1, "green", $space: rgb)  * channel($rgb2, "green", $space: rgb), 255));
+  $b: floor(div(channel($rgb1, "blue", $space: rgb)   * channel($rgb2, "blue", $space: rgb), 255));
+  @return rgb($r, $g, $b);
+}
+
+/// Calcula o brilho de uma cor
+/// @param {Color} $color - Cor para calcular o brilho
+/// @return {Number} Valor do brilho (0-255)
+/// @example scss
+///   getBrightness(#ffffff) => 255
+///
+@function getBrightness($color) {
+  @return div(
+    channel($color, "red", $space: rgb) * 299 + 
+    channel($color, "green", $space: rgb) * 587 + 
+    channel($color, "blue", $space: rgb) * 114, 
+    1000
+  );
+}
+ 
+/// Função que verifica se uma cor é clara
+/// @param {color} $color - Cor para verificar
+/// @return {boolean} True se a cor for clara, False se for escura
+///
+@function isLight($color) {
+  @return getBrightness($color) >= 128;
+}
+
+///Função que determina a cor de contraste ideal (preto ou branco)
+///@param {color} $color - Cor base para determinar o contraste
+///@return {color} #000 para cores claras, #fff para cores escuras
+///
+@function getContrast($color) {
+  @if isLight($color) {
+    @return #000;
+  } @else {
+    @return #fff;
+  }
+}
+
+/// Cria uma paleta de cores gradiente
+/// @param {Color} $baseColor [red] - Cor base para o gradiente
+/// @param {List} $keys [(0,25,50,75,100)] - Lista de pontos do gradiente
+/// @return {Map} Mapa com as cores do gradiente
+/// @example scss
+///   gradiant(#ff0000) => (0: #800000, 25: #bf0000, 50: #ff0000, 75: #ff8080, 100: #ffffff)
+///
+@function gradiant($baseColor: red, $keys: (0,25,50,75,100)) {
+  $white: #fff;
+  $black: #000000;
+  $palette: ();
+
+  @each $key in $keys {
+    @if $key == 50 {
+      $palette: set($palette, $key, $baseColor);
+    }
+    @else if $key < 50 {
+      /* Convert 0-50 range to 0-100% */
+      $percentage: div($key * 100, 50);
+      $palette: set($palette, $key, mix($baseColor, $black, pct($percentage)));
+    }
+    @else {
+      /* Convert 50-100 range to 0-100% */
+      $percentage: div(($key - 50) * 100, 50);
+      $palette: set($palette, $key, mix($white, $baseColor, pct($percentage)));
+    }
+  }
+  @return $palette;
+}
+
+/// Obtém um canal específico de uma cor
+/// @param {Color} $color [white] - Cor para extrair o canal
+/// @param {String} $type ["red"] - Canal a ser extraído ('red', 'green' ou 'blue')
+/// @param {String} $space [rgb] - Espaço de cor a ser usado
+/// @return {Number} Valor do canal especificado
+/// @example scss
+///   channel(#ff0000, "red") => 255
+///
+@function channel(
+  $color: white, 
+  $type:  "red", 
+  $space: rgb
+){
+  @if function-exists("channel", "color") {
+    @return color.channel($color, $type, $space);
+  } @else {
+    @if $type == 'red' {
+      @return red($color);
+    }
+    @else if $type == 'green' {
+      @return green($color);
+    }
+    @else if $type == 'blue' {
+      @return blue($color);
+    }
+  }
+}
+
+/// Função compatível para ajuste de lightness (clarear/escurecer)
+/// @param {Color} $color - Cor base
+/// @param {Number} $lightness - Valor de ajuste (positivo para clarear, negativo para escurecer)
+/// @return {Color} Cor ajustada
+@function adjust($color, $lightness) {
+  @if function-exists('adjust', 'color') {
+    @return color.adjust($color, $lightness: $lightness);
+  } @else {
+    @if $lightness > 0 {
+      @return lighten($color, $lightness);
+    } @else if $lightness < 0 {
+      @return darken($color, -$lightness);
+    } @else {
+      @return $color;
+    }
+  }
+}

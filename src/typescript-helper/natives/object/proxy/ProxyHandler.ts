@@ -119,6 +119,9 @@ const propertyVariable = '__proxy__';
 
 export {
 	proxyHandler,
+}
+
+export type {
 	ProxyOptions,
 	getProxy,
 }

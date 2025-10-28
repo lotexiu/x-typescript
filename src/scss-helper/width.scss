@@ -1,0 +1,37 @@
+@use 'utils' as *;
+@use 'math' as *;
+
+@mixin setWidth($type, $unit) {
+  #{attrContains(width, '&$', #{$unit}#{$type})} {
+    width: #{$unit}#{$type};
+  }
+  #{attrContains(width, '&$', min#{$unit}#{$type})} {
+    min-width: #{$unit}#{$type};
+  }
+  #{attrContains(width, '&$', max#{$unit}#{$type})} {
+    max-width: #{$unit}#{$type};
+  }
+}
+
+@mixin WidthStructure($min: 0%, $default: max-content, $max: 100%) {
+  * {
+    &:has(>[width-father]){
+      &:has(>#{attrContains(width-father, '&$', 'max100%')}) {
+        max-width: 100%;
+      }
+    }
+  }
+
+  [width] {
+    /* (0, 50, 100, 150, ...) */
+    @each $i in valuesFromSteps(50, 0, 20) {
+      @include setWidth('px', $i);
+    }
+    /* (0, 5, 10, 15, ...) */
+    @each $i in valuesFromSteps() {
+      @include setWidth('%', $i);
+      @include setWidth('vh', $i);
+      @include setWidth('vw', $i);
+    }
+  }
+}

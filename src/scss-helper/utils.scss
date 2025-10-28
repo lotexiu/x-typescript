@@ -1,0 +1,127 @@
+@use "sass:math" as *;
+@use "sass:map";
+@use "sass:color" as *;
+@use "sass:string" as *;
+@use "sass:meta" as *;
+@use "@angular/material" as mat;
+
+/// Gera uma lista de seletores CSS concatenados
+/// @param {List} $args - Lista variável de seletores CSS
+/// @return {String} String concatenada de seletores separados por vírgula
+/// @example scss
+///   selectorList('.classe1', '.classe2') => '.classe1, .classe2'
+///
+@function selectorList($args...) {
+  $selector: null;
+  /* Percorrendo pelos lista de seletores */
+  @each $class in $args {
+    /* Transformando a lista de seletores em um unico seletor */
+    @if $selector == null {
+      $selector: $class;
+    } @else {
+      $selector: $selector + ", " + $class;
+    }
+  }
+  /* Retornando resultado do seletor */
+  @return $selector;
+}
+
+/// Cria seletores de atributos com validações
+/// @param {String} $attribute - Nome do atributo
+/// @param {String} $validation ['not'] - Tipo de validação ('is', 'not' ou '>')
+/// @param {List} $args - Valores para validação
+/// @return {String} Seletor CSS completo
+/// @example scss
+///   selector('data-type', 'is', 'button') => '[data-type][data-type~="button"]'
+///
+@function selector($attribute, $validation: 'not', $args...) {
+  $selector: '[#{$attribute}]';
+
+
+  @each $arg in $args {
+    @if $validation == 'is' {
+      $selector: $selector + '[#{$attribute}~="#{$arg}"]';
+    } @else if $validation == 'not' {
+      $selector: $selector + ':not([#{$attribute}~="#{$arg}"])';
+    } @else if $validation == '>' {
+      $selector: $selector + '[#{$attribute}>#{$arg}]';
+    }
+  }
+  
+  
+  @return $selector;
+}
+
+/// Define uma propriedade CSS customizada
+/// @param {String} $property - Nome da propriedade
+/// @param {String} $type - Sintaxe da propriedade
+/// @param {Boolean} $inherit - Se a propriedade é herdada
+/// @param {*} $value - Valor inicial da propriedade
+/// @example scss
+///   @include property('minha-cor', '<color>', false, #ff0000)
+///
+@mixin property($property, $type, $inherit, $value) {
+  @property --#{$property} {
+    syntax: $type;
+    inherits: $inherit;
+    initial-value: $value;
+  }
+  // > {
+  //   --#{$property}: #{$value}
+  // }
+  // & {
+  // }
+}
+
+/// Converte um número para porcentagem
+/// @param {Number} $value - Valor a ser convertido
+/// @return {Number} Valor em porcentagem
+/// @example scss
+///   pct(0.5) => 50%
+///
+@function pct($value) {
+  @return $value * 1%;
+}
+
+@function attrContains($attr, $baseValidation: null, $values...) {
+  $selector: null;
+  
+  @each $value in $values {
+    $currentSelector: '[#{$attr}~="#{$value}"]';
+    
+    // Se tem baseValidation, aplica para cada valor
+    @if $baseValidation != null {
+      // Substitui $ pelo seletor atual
+      $processedSelector: str-replace($baseValidation, "$", $currentSelector);
+      
+      @if $selector == null {
+        $selector: $processedSelector;
+      } @else {
+        $selector: $selector + $processedSelector;
+      }
+    } @else {
+      // Comportamento original sem baseValidation
+      @if $selector == null {
+        $selector: $currentSelector;
+      } @else {
+        $selector: $selector + ', ' + $currentSelector;
+      }
+    }
+  }
+  
+  @return $selector;
+}
+
+@function str-replace($string, $search, $replace) {
+  $index: index($string, $search);
+  
+  @if $index {
+    @return slice($string, 1, $index - 1) + $replace + slice($string, $index + length($search));
+  }
+  
+  @return $string;
+}
+
+@mixin alignToElementCenter() {
+  transform: translate(-50%, -50%);
+}

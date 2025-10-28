@@ -1,0 +1,37 @@
+﻿@use "theme" as theme;
+
+$light: theme.palette(
+  3,
+  rgb(7,71,166),
+  rgb(255, 140, 45),
+  rgb(255, 255, 0),
+  rgb(0, 0, 0),
+  rgb(200, 0, 0),
+);
+
+$dark: theme.palette(
+  3,
+  rgb(0, 100, 255),
+  rgb(255, 140, 45),
+  rgb(255, 255, 0),
+  rgb(255, 255, 255),  
+  rgb(212, 14, 0)
+);
+
+$synthwave: theme.palette(
+  3,
+  rgb(106, 39, 192),
+  rgb(229, 233, 27),
+  rgb(255, 145, 0),
+  rgb(218, 17, 191),  
+  rgb(212, 14, 0)
+);
+
+$cyan: theme.palette(
+  3,
+  rgb(39, 192, 141),
+  rgb(27, 116, 233),
+  rgb(62, 177, 33),
+  rgb(192, 130, 38),  
+  rgb(212, 14, 0)
+);

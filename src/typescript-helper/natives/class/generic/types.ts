@@ -8,7 +8,7 @@ type IAnyClass<T=null> = T extends null
 	? IConstructor<any> & Function & NewableFunction
 	: IConstructor<T> & Function & NewableFunction & T;
 
-export {
+export type {
 	IConstructor as Constructor,
 	IPrototype as Prototype,
 	IAnyClass as AnyClass

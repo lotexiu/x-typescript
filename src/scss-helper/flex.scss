@@ -1,0 +1,266 @@
+@use 'utils' as *;
+@use 'math' as *;
+
+$duration: 0.3s;
+
+@mixin FlexTransition($direction, $name) {
+  @keyframes Flex#{$name} {
+    from {
+      flex-grow: 1;
+    }
+    to {
+      flex-grow: 0;
+    }
+  }
+  @if $direction == 'forward' {
+    animation: Flex#{$name} 0s, Flex#{$name} $duration reverse;
+    animation-fill-mode: both;
+  }
+  @else if $direction == 'reverse' {
+    animation: Flex#{$name} 0s reverse, Flex#{$name} $duration;
+    animation-fill-mode: both;
+  }
+}
+
+@mixin FlexStructure($gap) {
+  * {
+    --flex: false;
+    --d-flex: false;
+    --col: false;
+
+    @container style(--flex: true) and style(--col: true) {
+      &:not([flex]) {
+        max-width: 100%;
+      }
+    }  
+    @container style(--flex: true) and style(--col: false) {
+      &:not([flex]) {
+        max-height: 100%;
+      }
+    }
+
+    &:has(> [flex-father]) {
+      --flex: true;
+      --d-flex: true;
+      display: flex;
+      flex-flow: column;
+
+      &:has(> [flex-father~=off]) {
+        --d-flex: false;
+        display: block;
+      }
+
+      #{attrContains(flex-father, '&:has(> $),', column, col)} {
+        --col: true;
+        flex-flow: row;
+        overflow-y: hidden;
+        overflow-x: auto;
+      }
+
+      #{attrContains(flex-father, '&:has(> $),', grow, g)} {
+        flex-grow: 1;
+      }
+
+      #{attrContains(flex-father, '&:has(> $),', v-max-content, v-max)} {
+        min-height: max-content;
+      }
+
+      #{attrContains(flex-father, '&:has(> $),', v-center, vc)} {
+        #{attrContains(flex-father, '&$,', column, col)} {
+          align-items: center;
+        }
+        &#{attrContains(flex-father, ':not($)', column, col)} {
+          justify-content: center;
+        }
+      }
+
+      #{attrContains(flex-father, '&:has(> $),', hide-scroll, hscl)} {
+        overflow: hidden !important;
+      }
+
+      #{attrContains(flex-father, '&:has(> $),', no-scroll, nscl)} {
+        overflow: visible !important;
+      }
+    }
+  }
+
+  [flex] {
+    --flex: true;
+    --col: false;
+
+    transition: 
+      max-height $duration allow-discrete, 
+      min-height $duration allow-discrete, 
+      max-width  $duration allow-discrete, 
+      min-width  $duration allow-discrete, 
+      flex-basis $duration allow-discrete, 
+      flex-grow  $duration allow-discrete;
+
+    gap: $gap;
+    display: flex;
+    flex-flow: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    > * {
+      box-sizing: border-box;
+    }
+
+    #{attrContains(flex, '&$', off)} {
+      --d-flex: false;
+      display: block;
+    }
+
+    #{attrContains(flex, '&$,', column, col)} {
+      --col: true;
+      flex-flow: row;
+      overflow-y: hidden;
+      overflow-x: auto;
+    }
+
+    #{attrContains(flex, '&$,', grow, g)} {
+      flex-grow: 1;
+
+      @container style(--flex: true) and style(--col: true) {
+        max-width: 100%;
+      }
+      @container style(--flex: false) and style(--col: true) {
+        width: 100%;
+      }
+      @container style(--flex: true) and style(--col: false) {
+        max-height: 100%;
+      }
+      @container style(--flex: false) and style(--col: false) {
+        height: 100%;
+      }
+    }
+
+    #{attrContains(flex, '&$,', shrink, s)} {
+      flex-shrink: 1;
+    }
+
+    #{attrContains(flex, '&$,', no-shrink, ns)} {
+      flex-shrink: 0;
+      #{attrContains(flex, '&$,', column, col)} {
+        min-width: max-content;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        min-height: max-content;
+      }
+    }
+
+    #{attrContains(flex, '&$,', wrap, w)} {
+      flex-wrap: wrap;
+    }
+
+    #{attrContains(flex, '&$,', no-scroll, nscl)} {
+      overflow: visible !important;
+    }
+
+    #{attrContains(flex, '&$,', hide-scroll, hscl)} {
+      overflow: hidden !important;
+    }
+
+    #{attrContains(flex, '&$,', scroll, hscl)} {
+      overflow: auto !important;
+    }
+
+    #{attrContains(flex, '&$,', center, c)} {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #{attrContains(flex, '&$,', v-center, vc)} {
+      #{attrContains(flex, '&$,', column, col)} {
+        align-items: center;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        justify-content: center;
+      }
+    }
+
+    #{attrContains(flex, '&$,', v-top, vt)} {
+      #{attrContains(flex, '&$,', column, col)} {
+        align-items: flex-start;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        justify-content: flex-start;
+      }
+    }
+
+    #{attrContains(flex, '&$,', v-bottom, vb)} {
+      #{attrContains(flex, '&$,', column, col)} {
+        align-items: flex-end;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        justify-content: flex-end;
+      }
+    }
+
+    #{attrContains(flex, '&$,', h-center, hc)} {
+      #{attrContains(flex, '&$,', column, col)} {
+        justify-content: center;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        align-items: center;
+      }
+    }
+
+    #{attrContains(flex, '&$,', h-right, hr)} {
+      #{attrContains(flex, '&$,', column, col)} {
+        justify-content: flex-end;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        align-items: flex-end;
+      }
+    }
+
+    #{attrContains(flex, '&$,', h-left, hl)} {
+      #{attrContains(flex, '&$,', column, col)} {
+        justify-content: flex-start;
+      }
+      &#{attrContains(flex, ':not($)', column, col)} {
+        align-items: flex-start;
+      }
+    }
+
+    #{attrContains(flex, '&$,', h-fit-content, h-fit)} {
+      min-width: fit-content;
+    }
+    
+    #{attrContains(flex, '&$,', v-fit-content, v-fit)} {
+      min-height: fit-content;
+    }
+
+    #{attrContains(flex, '&$,', v-max-content, v-max)} {
+      min-height: fit-content;
+    }
+
+    @for $i from 0 through 100 {
+      $pct: calc($i/100);
+
+      #{attrContains(flex, '&$', $i)} {
+        @container style(--flex: true) and style(--col: true) {
+          max-width: percentage($pct) !important;
+          width: percentage($pct) !important;
+        }
+        @container style(--flex: false) and style(--col: true) {
+          width: percentage($pct) !important;
+        }
+
+        @container style(--flex: true) and style(--col: false) {
+          max-height: percentage($pct) !important;
+        }
+        @container style(--flex: false) and style(--col: false) {
+          height: percentage($pct) !important;
+        }
+      }
+
+      #{attrContains(gap, '&$', $i)} {
+        gap: #{$i}px;
+      }
+    }
+
+  }
+}

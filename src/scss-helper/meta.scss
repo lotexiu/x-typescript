@@ -1,0 +1,9 @@
+@use "sass:meta";
+
+@function type-of($value) {
+  @return meta.type-of($value);
+}
+
+@function function-exists($name, $module) {
+  @return meta.function-exists($name);
+}

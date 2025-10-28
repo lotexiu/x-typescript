@@ -1,0 +1,97 @@
+﻿@mixin variableSpinAnimation() {
+  @keyframes variable-spin {
+    0% {
+      transform: rotate(0deg);
+      animation-timing-function: ease-out;
+    }
+    65% {
+      transform: rotate(360deg);
+      animation-timing-function: ease-in;
+    }
+    100% {
+      transform: rotate(720deg);
+      animation-timing-function: ease-in;
+    }
+  }
+}
+
+@mixin showHideAnimation(){
+  .show-hide{
+    transition:
+      opacity 0.5s allow-discrete,
+      display 0.5s allow-discrete;
+    &.hide{
+      display: none;
+      opacity: 0;
+    }
+    @starting-style {
+      &:not(.hide):not(.show) {
+        opacity: 0;
+      }
+    }
+  }  
+}
+
+@mixin showCloseToTheBorders() {
+  &.top-right,
+  &.top-left {
+    top: 0;
+    transform: translate(0, 0);
+  }
+
+  &.bottom-right,
+  &.bottom-left,
+  &.bottom {
+    top: auto;
+    bottom: 10px;
+  }
+
+  &.top-right,
+  &.bottom-right {
+    left: auto;
+    right: 10px;
+  }
+
+  &.top-left,
+  &.bottom-left {
+    left: 10px;
+  }
+
+  &.bottom {
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  @starting-style {
+    opacity: 0;
+    transform: translate(-50%, -100%);
+
+    &.top-right,
+    &.top-left {
+      top: 0px;
+    }
+
+    &.bottom-right,
+    &.bottom-left,
+    &.bottom {
+      bottom: 0px;
+    }
+
+    &.top-right,
+    &.bottom-right {
+      right: 0;
+      transform: translate(100%, 0);
+    }
+
+    &.top-left,
+    &.bottom-left {
+      left: 0;
+      transform: translate(-100%, 0);
+    }
+
+    &.bottom {
+      left: 50%;
+      transform: translate(-50%, 100%);
+    }
+  }
+}
