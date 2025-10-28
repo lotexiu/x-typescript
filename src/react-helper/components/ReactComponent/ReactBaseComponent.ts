@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { proxyHandler } from "@tsn-object/proxy/ProxyHandler";
-import { Property } from "@tsn-object/proxy/types";
+import type { Property } from "@tsn-object/proxy/types";
 
 
 export abstract class ReactBaseComponent<Props=any> {

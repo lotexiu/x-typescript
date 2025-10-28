@@ -1,4 +1,4 @@
-import { ArrayType } from "@tsn-array/generic/types";
+import type { ArrayType } from "@tsn-array/generic/types";
 
 /**
  * Represents a function type with specified argument and return types.
@@ -54,7 +54,7 @@ type _IReturnType<T extends (...args: any) => any> = ReturnType<T>;
  */
 type _IInstanceType<T extends abstract new (...args: any) => any> = InstanceType<T>;
 
-export { 
+export type { 
   IFunction as Function, 
   INativeFunction as NativeFunction,
   IModifyReturnType as ModifyReturnType, 

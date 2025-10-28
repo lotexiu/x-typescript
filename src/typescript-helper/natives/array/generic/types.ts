@@ -1,4 +1,4 @@
-import { Never } from "@ts/types";
+import type { Never } from "@ts/types";
 
 /**
  * Returns the first element of an array.
@@ -80,7 +80,7 @@ type IItemType<T> = T extends (infer U)[] ? U : never;
  */
 type IArray<T=any> = Array<T>
 
-export { 
+export type { 
   IFirst as First, 
   ILast as Last, 
   IArrayType as ArrayType,

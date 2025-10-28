@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ReactBaseComponent } from "./ReactBaseComponent";
 
 export type BadTyping = (string|number|undefined)

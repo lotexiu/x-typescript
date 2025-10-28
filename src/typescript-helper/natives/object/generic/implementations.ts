@@ -1,9 +1,9 @@
-import { Function } from "@tsn-function/generic/types";
-import { AnyValue, Nullable } from "@ts/types";
-import { ConcatStrIntoKeys, CustomReturn, EntriesReturn, KeysOfType, Object, RemoveCicularReferences } from "./types";
-import { KeyOf } from "./types.native";
+import type { Function } from "@tsn-function/generic/types";
+import type { AnyValue, Nullable } from "@ts/types";
+import type { ConcatStrIntoKeys, CustomReturn, EntriesReturn, KeysOfType, Object, RemoveCicularReferences } from "./types";
+import type { KeyOf } from "./types.native";
 import { _String } from "@tsn-string/generic/implementations";
-import { AnyClass } from "@tsn-class/generic/types";
+import type { AnyClass } from "@tsn-class/generic/types";
 import { isNull } from "@ts/implementations";
 
 

@@ -1,4 +1,4 @@
-import { Extract } from "@tsn/types";
+import type { Extract } from "@tsn/types";
 
 /**
  * Makes all properties of T required.

@@ -1,6 +1,6 @@
-import { Constructor } from "@tsn-class/generic/types";
-import { ReactNode } from "react";
-import { ReactComponentProxy, WrappedComponent } from "./ReactComponent/types";
+import type { Constructor } from "@tsn-class/generic/types";
+import type { ReactNode } from "react";
+import type { ReactComponentProxy, WrappedComponent } from "./ReactComponent/types";
 import { ReactClientComponent } from "./ReactComponent/ReactClientComponent";
 
 export function ReactWrapper<T extends Constructor<any>>(ComponentClass: T): WrappedComponent<T> {

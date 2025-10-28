@@ -1,7 +1,7 @@
-import { Function } from "@tsn-function/generic/types";
-import { Pair } from "@tsn-array/generic/types";
-import { Extends } from "@ts/types";
-import { KeyOf, Pick } from "./types.native";
+import type { Function } from "@tsn-function/generic/types";
+import type { Pair } from "@tsn-array/generic/types";
+import type { Extends } from "@ts/types";
+import type { KeyOf, Pick } from "./types.native";
 
 type ICommonFields<T, U> = Pick<T, Extract<keyof T, keyof U>>;
 
@@ -220,7 +220,7 @@ type IDeepPartial<T> =
   } :
   T;
 
-export {
+export type {
   ICommonFields as CommonFields,
   IRemoveCicularReferences as RemoveCicularReferences,
   IPrimitiveObject as PrimitiveObject,

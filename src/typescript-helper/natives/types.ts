@@ -38,7 +38,7 @@ type _IExclude<T, U> = Exclude<T, U>;
  */
 type _IExtract<T, U> = Extract<T, U>;
 
-export {
+export type {
   _IAwaited as Awaited, 
   _INoInfer as NoInfer,
   _INonNullable as NonNullable,

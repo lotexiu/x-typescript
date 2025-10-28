@@ -22,7 +22,7 @@ type ProxyOptions<T> = {
 	}
 }
 
-export {
+export type {
 	Property,
 	PropertyState,
 	ProxyOptions,

@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import type { Dispatch } from "react";
 import { ReactBaseComponent } from "./ReactBaseComponent";
 
 export abstract class ReactClientComponent<Props=any> extends ReactBaseComponent<Props> {

@@ -1,4 +1,4 @@
-import { Extract } from "@tsn/types";
+import type { Extract } from "@tsn/types";
 
 /**
  * Type representing `null` or `never`.
@@ -32,7 +32,7 @@ type IIs<T,U> = Extract<T,U> extends never ? false : true;
 const _typeof = typeof '';
 type ITypeOf = typeof _typeof;
 
-export { 
+export type { 
   INever as Never, 
   INullable as Nullable,
   INotUndefined as NotUndefined,
