@@ -1,0 +1,18 @@
+{
+  "type": "module",
+  "author": "lotexiu",
+  "description": "א - Everything you need in one package",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lotexiu/x-typescript/tree/main/src"
+  },
+  "bugs": {
+    "url": "https://github.com/lotexiu/x-typescript/issues"
+  },
+  "homepage": "https://github.com/lotexiu/x-typescript#readme",
+  "keywords": [
+    "library",
+		"typescript"
+  ]
+}

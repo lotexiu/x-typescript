@@ -1,4 +1,4 @@
-import type { Nullable, TypeOf } from "@ts/types";
+import type { Nullable } from "@ts/types";
 import { circularReferenceHandler } from "@tsn-object/generic/implementations";
 
 
