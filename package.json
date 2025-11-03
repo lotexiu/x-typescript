@@ -2,7 +2,7 @@
   "type": "module",
   "author": "lotexiu",
   "name": "x-typescript",
-  "version": "0.2.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "א TypeScript - All your TypeScript needs in one package",
   "license": "MIT",
   "repository": {
@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "clean": "",
-    "build": "ts-node ./npm/Build.ts",
+    "build": "vite build",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {

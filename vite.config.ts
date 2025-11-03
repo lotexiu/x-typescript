@@ -1,16 +1,32 @@
 import { defineConfig, PluginOption } from "vite";
-
+import dts from "vite-plugin-dts";
+import path from "path";
+import fs from "fs";
+import { extractTsconfigAliases, getAllTSFiles } from "./vite/utils";
+import { MultiPackageJsonPlugin } from "./vite/plugins/MultiPackageJson";
+import { ExcludeSASSPProcessPlugin } from "./vite/plugins/ExcludeSASSPProcess";
+import { CopyAllSASSPlugin } from "./vite/plugins/CopyAllSASS";
+import { FixImportsPlugin } from "./vite/plugins/FixImport";
 
 export default defineConfig({
   plugins: [
+    dts({
+      include: ["src"],
+      outDir: "dist",
+      insertTypesEntry: false,
+    }),
+    ExcludeSASSPProcessPlugin(path.resolve(__dirname, "src")),
+    CopyAllSASSPlugin(path.resolve(__dirname, "src")),
+    MultiPackageJsonPlugin(),
+    FixImportsPlugin(),
   ],
-  resolve: {},
+  resolve: { alias: extractTsconfigAliases() },
   build: {
     minify: false,
     outDir: "dist",
     rollupOptions: {
       preserveEntrySignatures: "allow-extension",
-      input: [],
+      input: getAllTSFiles(path.resolve(__dirname, "src")),
       treeshake: false,
       output: {
         entryFileNames: "[name].js",

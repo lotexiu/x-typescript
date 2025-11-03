@@ -5,6 +5,7 @@
   "description": "א - Everything you need in one package",
   "version": "",
   "license": "MIT",
+  "publishConfig": {"access": "public"},
   "repository": {
     "type": "git",
     "url": "https://github.com/lotexiu/x-typescript/tree/main/src"
