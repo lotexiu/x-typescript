@@ -32,7 +32,7 @@ function loadTsconfigAliases() {
 		return aliases;
 	} catch (e) {
 		spinner.fail("Falha ao ler tsconfig.json");
-		logger.warning(String(e));
+		logger.warn(String(e));
 		return {};
 	}
 }
@@ -82,7 +82,7 @@ function generateExports(files: string[]) {
 				exportsObj[basePath] = relPath;
 				break;
 			default:
-				logger.warning(`Formato não suportado: ${ext} (${file})`);
+				logger.warn(`Formato não suportado: ${ext} (${file})`);
 		}
 	});
 	return exportsObj;
@@ -127,7 +127,7 @@ function generateDependencies(files: string[], folder: string, aliasMap: any, ro
 		spinner.succeed(`${folder}: ${Object.keys(deps).length} dependências detectadas`);
 	} catch (e) {
 		spinner.fail(`Falha ao gerar dependências para ${folder}`);
-		logger.warning(String(e));
+		logger.warn(String(e));
 	}
 	return deps;
 }

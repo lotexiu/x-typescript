@@ -31,8 +31,9 @@ export function FixImportsPlugin(): PluginOption {
             const origin = relativePath.split('/')[0];
             
             if (origin != from) {
-              const parsed = path.parse(relativePath);
-              const newImport = `${buildPackageName(author, origin)}/${parsed.dir ? parsed.dir + "/" : ""}${parsed.name}`;
+              const parsedPath = path.parse(relativePath.split('/').slice(1).join('/'));
+              const pathWithoutExtension = path.join(parsedPath.dir, parsedPath.name);
+              const newImport = `${buildPackageName(author, origin)}/${pathWithoutExtension}`;
               content = content.replace(result, newImport);
               changed = true;
               logger.success(`✔ Corrigido: ${path.relative(process.cwd(), file)}`);
