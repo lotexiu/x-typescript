@@ -1,7 +1,9 @@
 {
   "type": "module",
   "author": "lotexiu",
+  "name": "",
   "description": "א - Everything you need in one package",
+  "version": "",
   "license": "MIT",
   "repository": {
     "type": "git",

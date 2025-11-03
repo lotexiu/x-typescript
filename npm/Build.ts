@@ -1,104 +1,250 @@
-import "tsconfig-paths/register.js";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
-import { log } from "console";
+import ora from "ora";
+import { clear, log } from "console";
 
-const {error, info, warning} = {
-	info: (msg: string)=> log(chalk.blue(msg)),
-	error: (msg: string)=> log(chalk.red(msg)),
-	warning: (msg: string)=> log(chalk.yellow(msg)),
-}
+/*───────────────────────────────────────────────
+│ Log helpers
+───────────────────────────────────────────────*/
+const logger = {
+	info: (msg: string) => log(chalk.blue(msg)),
+	success: (msg: string) => log(chalk.green(msg)),
+	error: (msg: string) => log(chalk.red(msg)),
+	warning: (msg: string) => log(chalk.yellow(msg)),
+	step: (msg: string) => log(chalk.cyan(`→ ${msg}`)),
+};
 
-function newDist() {
-	fs.removeSync("./dist");
-	fs.mkdirSync("./dist");
-}
+/*───────────────────────────────────────────────
+│ Configurações globais
+───────────────────────────────────────────────*/
+const ROOT_DIR = "./";
+const SRC_DIR = path.join(ROOT_DIR, "src");
+const DIST_DIR = path.join(ROOT_DIR, "dist");
+const TEMPLATE_PKG = path.join(ROOT_DIR, "npm/template.package.json");
 
-function rootPackageJson() {
-	if (fs.existsSync("./package.json")) {
-		try {
-			return fs.readJSONSync("./package.json", 'utf-8');
-		} catch (e) {
-			error(`Failed to read package.json: ${e}`);
-			process.exit(1);
-		}
-	} else {
-		error("package.json not found in the root directory.");
+/*───────────────────────────────────────────────
+│ Padrões de importação
+───────────────────────────────────────────────*/
+const importPatterns: Record<string, RegExp[]> = {
+	script: [/(?:import.*from\s+['"]([^'"]+)['"])|(?:require\(['"]([^'"]+)['"]\))/g],
+	style: [/@import\s+['"]([^'"]+)['"]/g, /@use\s+['"]([^'"]+)['"]/g],
+};
+
+const formatGroups: Record<string, string> = {
+	ts: "script",
+	tsx: "script",
+	js: "script",
+	jsx: "script",
+	sass: "style",
+	scss: "style",
+	css: "style",
+};
+
+/*───────────────────────────────────────────────
+│ Setup inicial
+───────────────────────────────────────────────*/
+function cleanDist() {
+	const spinner = ora("Limpando diretório dist...").start();
+	try {
+		fs.removeSync(DIST_DIR);
+		fs.mkdirSync(DIST_DIR);
+		spinner.succeed("Diretório dist limpo com sucesso!");
+	} catch (err) {
+		spinner.fail("Falha ao limpar dist.");
+		logger.error(String(err));
 		process.exit(1);
 	}
 }
 
-function start() {
-	const packages = fs.globSync(`${contentDir}/*/`)
-		.reduce((packages, pathFolder):  Record<string,string[]> => {
-			const folder: string = path.basename(pathFolder); // get folder name
-			packages[folder] = fs.globSync(`${pathFolder}/**/*.*`); // get all files in the folder
+function loadRootPackage() {
+	const spinner = ora("Lendo package.json raiz...").start();
+	const pkgPath = path.join(ROOT_DIR, "package.json");
 
-			const packageJson = createPackageJson(packages[folder], folder)
-			
-			fs.mkdirSync(`./dist/${folder}`);
-			fs.writeJSON(`./dist/${folder}/package.json`, packageJson, { spaces: 2 })
+	if (!fs.existsSync(pkgPath)) {
+		spinner.fail("package.json não encontrado.");
+		process.exit(1);
+	}
 
-			return packages;
-		},{});
-
-	info("✅ Packages built successfully!");
+	try {
+		const data = fs.readJSONSync(pkgPath, "utf-8");
+		spinner.succeed("package.json carregado!");
+		return data;
+	} catch (e) {
+		spinner.fail("Erro ao ler package.json");
+		logger.error(String(e));
+		process.exit(1);
+	}
 }
 
-function generateExport(files: string[]) {
-	return files.reduce((exportsObj, file:string): Record<string,any> => {
-		const format = path.extname(file).toLowerCase();
-		const exportPath = `./${file.replace(/\.[^.]+$/, '')}`;
+function loadTsconfigAliases() {
+	const tsconfigPath = path.join(ROOT_DIR, "tsconfig.json");
+	if (!fs.pathExistsSync(tsconfigPath)) return {};
 
-		switch (format) {
-			case '.ts':
-				exportsObj[exportPath] = {
-					"import": `./${exportPath}.js`,
-					"require": `./${exportPath}.js`,
-					"types": `./${exportPath}.d.ts`
-				}
+	const spinner = ora("Lendo aliases do tsconfig.json...").start();
+	try {
+		const tsconfig = fs.readJsonSync(tsconfigPath);
+		const aliases = tsconfig.compilerOptions?.paths ?? {};
+		spinner.succeed(`Aliases carregados (${Object.keys(aliases).length})`);
+		return aliases;
+	} catch (e) {
+		spinner.fail("Falha ao ler tsconfig.json");
+		logger.warning(String(e));
+		return {};
+	}
+}
+
+/*───────────────────────────────────────────────
+│ Utilitários
+───────────────────────────────────────────────*/
+function resolveAlias(libName: string, aliasMap: Record<string, string[]>): string {
+	for (const alias in aliasMap) {
+		const cleanAlias = alias.replace(/\*$/, "");
+		if (libName.startsWith(cleanAlias)) {
+			const paths = aliasMap[alias];
+			if (paths?.length) {
+				return paths[0].replace(/\*$/, "");
+			}
+		}
+	}
+	return libName;
+}
+
+function buildPackageName(author: string, folder: string) {
+	return `@${author}/${folder}`;
+}
+
+/*───────────────────────────────────────────────
+│ Geração de package.json
+───────────────────────────────────────────────*/
+function generateExports(files: string[]) {
+	const exportsObj: Record<string, any> = {};
+
+	files.forEach(file => {
+		const ext = path.extname(file).toLowerCase();
+		const basePath = `./${file.replace(/\.[^.]+$/, "")}`;
+		const relPath = `./${file}`;
+
+		switch (ext) {
+			case ".ts":
+			case ".tsx":
+			case ".js":
+			case ".jsx":
+				exportsObj[basePath] = {
+					import: `${basePath}.js`,
+					require: `${basePath}.js`,
+					types: `${basePath}.d.ts`,
+				};
 				break;
-			case '.js':
-				exportsObj[exportPath] = {
-					"import": `./${file}`,
-					"require": `./${file}`
-				}
-				break;
-			case '.d.ts':
-				exportsObj[exportPath] = `./${file}`;
-				break;
-			case '.scss':
-			case '.sass':
-			case '.css':
-				exportsObj[exportPath] = `./${file}`;
+			case ".d.ts":
+			case ".scss":
+			case ".sass":
+			case ".css":
+				exportsObj[basePath] = relPath;
 				break;
 			default:
-				warning(`Unsupported file format: ${format} in file ${file}`);
-				break;
-			/* TODO - fazer para tsx e outros */
+				logger.warning(`Formato não suportado: ${ext} (${file})`);
 		}
-		return exportsObj;
-	}, {})
+	});
+	return exportsObj;
 }
 
-function createPackageJson(files: string[], folder:string) {
-	const packageJson: Record<string,any> = fs.readJSONSync("./npm/template.package.json", 'utf-8');
-	
-	packageJson.author = rootPkgJson.author || "";
-	packageJson.name = `${rootPkgJson.author}-${folder}`;
-	packageJson.version = rootPkgJson.version || "1.0.0";
-	packageJson.license = rootPkgJson.license || "MIT";
-	packageJson.repository.url += `/${folder}`;
-	packageJson.keywords.push(folder);
-	packageJson.files = files.map(file => path.relative(`./src/${folder}`, file));
-	packageJson.exports = generateExport(packageJson.files);
+function extractDependencies(content: string, ext: string, aliasMap: any, folder: string, rootPkg: any) {
+	const deps: Record<string, string> = {};
+	const groupKey = formatGroups[ext];
+	if (!groupKey) return deps;
 
-	return packageJson;
+	const patterns = importPatterns[groupKey];
+	if (!patterns) return deps;
+
+	patterns.forEach(pattern => {
+		let match: RegExpExecArray | null;
+		while ((match = pattern.exec(content)) !== null) {
+			const imp = match[1] || match[2];
+			if (!imp || imp.startsWith(".") || imp.startsWith("/")) continue;
+
+			const resolved = resolveAlias(imp, aliasMap);
+
+			if (resolved !== imp && !resolved.startsWith(`./src/${folder}`)) {
+				const originalFolder = path.relative("./src", resolved).split("/")[0];
+				deps[buildPackageName(rootPkg.author, originalFolder)] = rootPkg.version;
+			} else if (rootPkg.dependencies?.[imp]) {
+				deps[imp] = rootPkg.dependencies[imp];
+			}
+		}
+	});
+	return deps;
 }
 
-const contentDir =  "./src";
-const rootPkgJson: Record<string,any> = rootPackageJson();
+function generateDependencies(files: string[], folder: string, aliasMap: any, rootPkg: any) {
+	const spinner = ora(`Gerando dependências de ${folder}...`).start();
+	const deps: Record<string, string> = {};
+	try {
+		for (const file of files) {
+			const content = fs.readFileSync(file, "utf-8");
+			const ext = path.extname(file).replace(".", "").toLowerCase();
+			Object.assign(deps, extractDependencies(content, ext, aliasMap, folder, rootPkg));
+		}
+		spinner.succeed(`${folder}: ${Object.keys(deps).length} dependências detectadas`);
+	} catch (e) {
+		spinner.fail(`Falha ao gerar dependências para ${folder}`);
+		logger.warning(String(e));
+	}
+	return deps;
+}
 
-newDist();
-start();
+function createPackageJson(files: string[], folder: string, aliasMap: any, rootPkg: any) {
+	const spinner = ora(`Gerando package.json para ${folder}...`).start();
+	try {
+		const template = fs.readJSONSync(TEMPLATE_PKG, "utf-8");
+		template.author = rootPkg.author ?? "";
+		template.name = buildPackageName(rootPkg.author, folder);
+		template.version = rootPkg.version ?? "1.0.0";
+		template.license = rootPkg.license ?? "MIT";
+		template.repository.url += `/${folder}`;
+		template.keywords.push(folder);
+		template.files = files.map(f => path.relative(`./src/${folder}`, f));
+		template.exports = generateExports(template.files);
+		template.dependencies = generateDependencies(files, folder, aliasMap, rootPkg);
+		spinner.succeed(`package.json de ${folder} criado!`);
+		return template;
+	} catch (e) {
+		spinner.fail(`Erro ao criar package.json de ${folder}`);
+		logger.error(String(e));
+		return {};
+	}
+}
+
+/*───────────────────────────────────────────────
+│ Pipeline principal
+───────────────────────────────────────────────*/
+function buildPackages() {
+	logger.step("Iniciando build de pacotes...");
+
+	const rootPkg = loadRootPackage();
+	const tsConfigAlias = loadTsconfigAliases();
+	cleanDist();
+
+	const packages = fs.globSync(`${SRC_DIR}/*/`);
+	const spinner = ora("Processando pacotes...").start();
+
+	for (const folderPath of packages) {
+		const folder = path.basename(folderPath);
+		const files = fs.globSync(`${folderPath}/**/*.*`);
+
+		const pkg = createPackageJson(files, folder, tsConfigAlias, rootPkg);
+		const distPath = path.join(DIST_DIR, folder);
+
+		fs.mkdirpSync(distPath);
+		fs.writeJSONSync(path.join(distPath, "package.json"), pkg, { spaces: 2 });
+	}
+
+	spinner.succeed("Todos os pacotes foram processados!");
+	logger.success("✅ Build finalizado com sucesso!");
+}
+
+/*───────────────────────────────────────────────
+│ Execução
+───────────────────────────────────────────────*/
+clear();
+buildPackages();
