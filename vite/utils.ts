@@ -37,7 +37,7 @@ export const logger = {
   info: (msg: string) => log(chalk.blue(msg)),
   success: (msg: string) => log(chalk.green(msg)),
   error: (msg: string) => log(chalk.red(msg)),
-  warning: (msg: string) => log(chalk.yellow(msg)),
+  warn: (msg: string) => log(chalk.yellow(msg)),
   step: (msg: string) => log(chalk.cyan(`→ ${msg}`)),
 };
 
@@ -93,4 +93,8 @@ export function loadRootPackage() {
     logger.error(String(e));
     process.exit(1);
   }
+}
+
+export function buildPackageName(author: string, folder: string) {
+	return `@${author}/${folder}`;
 }

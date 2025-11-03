@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import ora from "ora";
 import { PluginOption } from "vite";
-import { DIST_DIR, formatGroups, importPatterns, loadRootPackage, logger, ROOT_DIR, SRC_DIR, TEMPLATE_PKG } from "../utils";
+import { buildPackageName, DIST_DIR, formatGroups, importPatterns, loadRootPackage, logger, ROOT_DIR, SRC_DIR, TEMPLATE_PKG } from "../utils";
 
 /*───────────────────────────────────────────────
 │ Setup inicial
@@ -51,17 +51,6 @@ function resolveAlias(libName: string, aliasMap: Record<string, string[]>): stri
 		}
 	}
 	return libName;
-}
-
-function buildPackageName(author: string, folder: string) {
-	return `@${author}/${folder}`;
-}
-
-/*───────────────────────────────────────────────
-│ Compilação dos pacotes
-───────────────────────────────────────────────*/
-function compilePackage(files: string[], folder: string, aliasMap: any, rootPkg: any) {
-	
 }
 
 /*───────────────────────────────────────────────
@@ -189,10 +178,7 @@ export function MultiPackageJsonPlugin(): PluginOption {
 		
 				fs.mkdirpSync(distPath);
 				fs.writeJSONSync(path.join(distPath, "package.json"), pkg, { spaces: 2 });
-		
-				compilePackage(files, folder, tsConfigAlias, rootPkg);
 			}
-		
 			spinner.succeed("Todos os pacotes foram processados!");
 			logger.success("✅ Build finalizado com sucesso!");
 		},

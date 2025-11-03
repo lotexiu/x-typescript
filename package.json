@@ -2,7 +2,7 @@
   "type": "module",
   "author": "lotexiu",
   "name": "x-typescript",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-beta.1",
   "description": "א TypeScript - All your TypeScript needs in one package",
   "license": "MIT",
   "repository": {
@@ -25,7 +25,7 @@
   "scripts": {
     "clean": "",
     "build": "vite build",
-    "prepublishOnly": "npm run build"
+    "pub": "npm run build && ts-node --esm npm/publish-dist.ts"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

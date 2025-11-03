@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import { PluginOption } from "vite";
-import { DIST_DIR, formatGroups, importPatterns, loadRootPackage, logger } from "../utils";
+import { buildPackageName, DIST_DIR, formatGroups, importPatterns, loadRootPackage, logger } from "../utils";
 
 export function FixImportsPlugin(): PluginOption {
 	return {
@@ -10,7 +10,7 @@ export function FixImportsPlugin(): PluginOption {
 		apply: "build",
 		async closeBundle() {
 			logger.info("🔧 Corrigindo importações após build...");
-      const rootPkg = loadRootPackage();
+      const {author} = loadRootPackage();
 
 			fs.globSync(`${DIST_DIR}/**/*.*`).forEach((file): void => {
         const ext = path.extname(file).replace(".", "").toLowerCase();
@@ -31,7 +31,8 @@ export function FixImportsPlugin(): PluginOption {
             const origin = relativePath.split('/')[0];
             
             if (origin != from) {
-              const newImport = `@${rootPkg.author}/${origin}/${relativePath.split('/').slice(1).join('/')}`;
+              const parsed = path.parse(relativePath);
+              const newImport = `${buildPackageName(author, origin)}/${parsed.dir ? parsed.dir + "/" : ""}${parsed.name}`;
               content = content.replace(result, newImport);
               changed = true;
               logger.success(`✔ Corrigido: ${path.relative(process.cwd(), file)}`);

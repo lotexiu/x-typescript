@@ -1,7 +1,6 @@
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import path from "path";
-import fs from "fs";
 import { extractTsconfigAliases, getAllTSFiles } from "./vite/utils";
 import { MultiPackageJsonPlugin } from "./vite/plugins/MultiPackageJson";
 import { ExcludeSASSPProcessPlugin } from "./vite/plugins/ExcludeSASSPProcess";
