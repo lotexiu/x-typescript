@@ -1,4 +1,4 @@
-import type { ArrayType } from "@tsn-array/generic/types";
+import type { TArrayType } from "@tsn-array/generic/types";
 
 /**
  * Represents a function type with specified argument and return types.
@@ -6,14 +6,14 @@ import type { ArrayType } from "@tsn-array/generic/types";
  * type MyFunction = Function<[number, string], false, any, void>;
  * const fn: MyFunction = (num, str) => { console.log(num, str); };
  */
-type IFunction<
+type TFunction<
   Types extends any[] = any[],
   RType = void,
   Inf extends boolean = false,
   InfType = any,
-> = (...args: ArrayType<Types, Inf, InfType>) => RType
+> = (...args: TArrayType<Types, Inf, InfType>) => RType
 
-type INativeFunction = Function
+type TNativeFunction = Function
 
 /**
  * Changes the return type of a function type.
@@ -23,7 +23,7 @@ type INativeFunction = Function
  * type OriginalFunction = (a: number, b: string) => boolean;
  * type ModifiedFunction = ModifyReturnType<OriginalFunction, void>; // (a: number, b: string) => void
  */
-type IModifyReturnType<Func extends (...args: any) => any, NewReturnType> = 
+type TModifyReturnType<Func extends (...args: any) => any, NewReturnType> = 
   Func extends (...args: infer Args) => any ? (...args: Args) => NewReturnType : never;
 
 /**
@@ -31,35 +31,35 @@ type IModifyReturnType<Func extends (...args: any) => any, NewReturnType> =
  * @example
  * type ParametersExample = Parameters<(a: number, b: string) => void>; //[a: number, b: string]
  */
-type _IParameters<T> = T extends (...args: infer P) => any ? P : never;
+type TParameters<T> = T extends (...args: infer P) => any ? P : never;
 
 /**
  * Gets the parameters of a constructor function type as a tuple.
  * @example
  * type ConstructorParametersExample = ConstructorParameters<new (a: number, b: string) => void>; // [number, string]
  */
-type _IConstructorParameters<T extends abstract new (...args: any) => any> = ConstructorParameters<T>;
+type TConstructorParameters<T> = T extends abstract new (...args: infer P) => any ? P : never;
 
 /**
  * Gets the return type of a function type.
  * @example
  * type ReturnTypeExample = ReturnType<() => string>; // string
  */
-type _IReturnType<T extends (...args: any) => any> = ReturnType<T>;
+type TReturnType<T extends (...args: any) => any> = ReturnType<T>;
 
 /**
  * Gets the instance type of a constructor function type.
  * @example
  * type InstanceTypeExample = InstanceType<new () => { a: number }>; // { a: number }
  */
-type _IInstanceType<T extends abstract new (...args: any) => any> = InstanceType<T>;
+type TInstanceType<T extends abstract new (...args: any) => any> = InstanceType<T>;
 
 export type { 
-  IFunction as Function, 
-  INativeFunction as NativeFunction,
-  IModifyReturnType as ModifyReturnType, 
-  _IParameters as Parameters, 
-  _IReturnType as ReturnType, 
-  _IInstanceType as InstanceType, 
-  _IConstructorParameters as ConstructorParameters,
+  TFunction,
+  TNativeFunction,
+  TModifyReturnType,
+  TParameters,
+  TReturnType,
+  TInstanceType,
+  TConstructorParameters,
 }

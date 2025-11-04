@@ -1,20 +1,19 @@
-import type { Function } from "@tsn-function/generic/types";
 import type { AnyValue, Nullable } from "@ts/types";
-import type { ConcatStrIntoKeys, CustomReturn, EntriesReturn, KeysOfType, Object, RemoveCicularReferences } from "./types";
+import type { TConcatStrIntoKeys, TCustomReturn, TEntriesReturn, TKeysOfType, TObject, TRemoveCicularReferences } from "./types";
 import type { KeyOf } from "./types.native";
 import { _String } from "@tsn-string/generic/implementations";
-import type { AnyClass } from "@tsn-class/generic/types";
+import type { TClazz } from "@tsn-class/generic/types";
 import { isNull } from "@ts/implementations";
 
 
-export function isEmptyObj(obj: Object): obj is {} {
+export function isEmptyObj(obj: TObject): obj is {} {
 	for (let _x in obj) {
 		return false;
 	}
 	return true;
 }
 
-export function circularReferenceHandler(): RemoveCicularReferences {
+export function circularReferenceHandler(): TRemoveCicularReferences {
   const seen = new Set();
   return function(key: string, value: any): any {
     if (value !== null && typeof value === 'object') {
@@ -27,7 +26,7 @@ export function circularReferenceHandler(): RemoveCicularReferences {
   };
 }
 
-function makeObjectBasedOn<T extends (AnyClass|AnyValue)>(value: T): T {
+function makeObjectBasedOn<T extends (TClazz|AnyValue)>(value: T): T {
   const obj = {} as T;
   (Object.getOwnPropertyNames(value) as KeyOf<T>[])
     .forEach((key: KeyOf<T>): void => {
@@ -36,21 +35,21 @@ function makeObjectBasedOn<T extends (AnyClass|AnyValue)>(value: T): T {
   return obj;
 }
 
-function addPrefixToKeys<T extends Object, Prefix extends string>(value: T, prefix: Prefix): ConcatStrIntoKeys<T, Prefix> {
+function addPrefixToKeys<T extends TObject, Prefix extends string>(value: T, prefix: Prefix): TConcatStrIntoKeys<T, Prefix> {
   const obj: any = {};
   (Object.getOwnPropertyNames(value) as KeyOf<T, string>[])
     .forEach((key: KeyOf<T, string>): void => {
       const newKey = `${prefix}${_String.capitalize(key)}`;
       obj[newKey] = value[key];
     });
-  return obj as ConcatStrIntoKeys<T, Prefix>;
+  return obj as TConcatStrIntoKeys<T, Prefix>;
 }
 
-function copyValue<T extends (AnyClass|AnyValue), Prefix extends Nullable<string, true> = null >(
+function copyValue<T extends (TClazz|AnyValue), Prefix extends Nullable<string, true> = null >(
   value:T, 
   prefixOnKeys?: Prefix,
-): CustomReturn<Prefix,[
-  [string, ConcatStrIntoKeys<T, Prefix>],
+): TCustomReturn<Prefix,[
+  [string, TConcatStrIntoKeys<T, Prefix>],
   [null|undefined, T]
 ]> {
   let copiedValue: any;
@@ -85,8 +84,8 @@ function setValueFromPath(obj: any, path: string, value: any): void {
 }
 
 function removeNullFields<T extends object>(obj: T): Partial<T> {
-  return (Object.entries(obj) as EntriesReturn<T>[])
-    .reduce((acc: Partial<T>, [key, value]: EntriesReturn<T>): Partial<T> => {
+  return (Object.entries(obj) as TEntriesReturn<T>[])
+    .reduce((acc: Partial<T>, [key, value]: TEntriesReturn<T>): Partial<T> => {
       if (!isNull(value)) {
         acc[key as keyof T] = value;
       }
@@ -94,17 +93,17 @@ function removeNullFields<T extends object>(obj: T): Partial<T> {
     }, {} as Partial<T>);
 }
 
-function λ<T extends Object, R>(value: T, functionName: KeysOfType<T, Function>): R {
+function λ<T extends TObject, R>(value: T, functionName: TKeysOfType<T, Function>): R {
   return ((...args: any): any => {
     return (value[functionName] as Function)(...args);
   }) as R;
 }
 
-function lambda<T extends Object, R>(value: T, functionName: KeysOfType<T, Function>): R {
+function lambda<T extends TObject, R>(value: T, functionName: TKeysOfType<T, Function>): R {
   return λ(value, functionName);
 }
 
-function isAClassDeclaration<T>(obj: any): obj is AnyClass<T> & T {
+function isAClassDeclaration<T>(obj: any): obj is TClazz<T> & T {
   return typeof obj === 'function' && /^class\s/.test(obj.toString());
 }
 

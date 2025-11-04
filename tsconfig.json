@@ -12,10 +12,8 @@
     "declaration": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "verbatimModuleSyntax": true,
 		"paths": {
       "@tsn-array/*": ["./src/typescript/natives/array/*"],
       "@tsn-class/*": ["./src/typescript/natives/class/*"],

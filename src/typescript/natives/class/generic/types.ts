@@ -1,15 +1,15 @@
-type IConstructor<T> = new (...args: any[]) => T;
+type TConstructor<T> = new (...args: any[]) => T;
 
-type IPrototype<T> = {
-  constructor: IConstructor<T>;
+type TPrototype<T> = {
+  constructor: TConstructor<T>;
 } ;
 
-type IAnyClass<T=null> = T extends null 
-	? IConstructor<any> & Function & NewableFunction
-	: IConstructor<T> & Function & NewableFunction & T;
+type TClazz<T=null> = T extends null 
+	? TConstructor<any> & Function & NewableFunction
+	: TConstructor<T> & Function & NewableFunction;
 
 export type {
-	IConstructor as Constructor,
-	IPrototype as Prototype,
-	IAnyClass as AnyClass
+	TConstructor,
+	TPrototype,
+	TClazz,
 }

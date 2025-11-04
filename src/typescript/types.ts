@@ -30,7 +30,7 @@ type IAnyValue<T=any> = T & Object
 type IIs<T,U> = Extract<T,U> extends never ? false : true;
 
 const _typeof = typeof '';
-type ITypeOf = typeof _typeof;
+type ITypeOfValue = typeof _typeof;
 
 export type { 
   INever as Never, 
@@ -40,5 +40,5 @@ export type {
   IAnyType as AnyType,
   IAnyValue as AnyValue,
   IIs as Is,
-  ITypeOf as TypeOf
+  ITypeOfValue as TypeOfValue
 }

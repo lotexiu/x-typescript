@@ -1,17 +1,13 @@
-import type { Function } from "@tsn-function/generic/types";
-import type { Pair } from "@tsn-array/generic/types";
+import type { TFunction } from "@tsn-function/generic/types";
+import type { TPair } from "@tsn-array/generic/types";
 import type { Extends } from "@ts/types";
 import type { KeyOf, Pick } from "./types.native";
 
-type ICommonFields<T, U> = Pick<T, Extract<keyof T, keyof U>>;
+type TCommonFields<T, U> = Pick<T, Extract<keyof T, keyof U>>;
 
-type IPrimitiveObject = {
-  [key: string|number]: any;
-  [key: symbol]: symbol;
+type TPrimitiveObject = {
+  [key: KeyOf]: any;
 } & Object
-
-type _Object = Object & {[key: string|number]: any;} 
-  & INegate<[]>;
 
 /**
  * Negates the presence of a key in a mapped type.
@@ -29,11 +25,12 @@ type INegate<T> = {
   }
 }[KeyOf<T, string>];
 
-type IObject<T=_Object> =
+type TObject<T=Object> =
   T extends Function ? never :
   T extends Array<any> ? never :
-  T extends object ? T & Object :
+  T extends object ? T :
   never;
+
 
 /**
  * Restricts the fields that can be created in an object and their types.
@@ -59,7 +56,7 @@ type IObject<T=_Object> =
  *
  * // Result: Only the specified fields are allowed, and their values must match the specified type.
  */
-type ILockedParams<
+type TLockedParams<
   fieldType,  
   valueType = any                    
 > = Partial<Record<Extends<fieldType, string>, valueType>>
@@ -84,9 +81,9 @@ type ILockedParams<
  *
  * // Result: Returns the mapped type for the given key, or never if not found.
  */
-type ICustomReturn <
+type TCustomReturn <
 Type, 
-Returns extends Pair<any, any>[]
+Returns extends TPair<any, any>[]
 > = {
   [Return in KeyOf<Returns>]: 
     Type extends Returns[Return][0] ?
@@ -110,7 +107,7 @@ Returns extends Pair<any, any>[]
  *
  * @returns A union of keys whose values match the specified type.
  */
-type IKeysOfType<
+type TKeysOfType<
   Target, 
   Type
 > = {
@@ -133,7 +130,7 @@ type IKeysOfType<
  *
  * @returns The key if it matches the type, otherwise never.
  */
-type IHasExactKey <
+type THasExactKey <
   Target, 
   Key extends KeyOf<Target>,
   Type extends Target[Key]
@@ -156,7 +153,7 @@ type IHasExactKey <
  * //   prefixGetAge(): number;
  * // }
  */
-type IConcatStrIntoKeys<Base, Prefix extends string|null|undefined> = {
+type TConcatStrIntoKeys<Base, Prefix extends string|null|undefined> = {
   [Key in KeyOf<Base> as 
     Key extends string ? `${Prefix}${Capitalize<Key>}`
     : never
@@ -175,7 +172,7 @@ type IConcatStrIntoKeys<Base, Prefix extends string|null|undefined> = {
  * }
  * type IdType = GetTypeFromKey<Example, 'id'>; // number
  */
-type IGetTypeFromKey<T, K extends KeyOf<T>> = T[K];
+type TGetTypeFromKey<T, K extends KeyOf<T>> = T[K];
 
 /**
  * Returns a tuple of [key, value] for an object or class.
@@ -189,7 +186,7 @@ type IGetTypeFromKey<T, K extends KeyOf<T>> = T[K];
  * }
  * type Entry = EntriesReturn<Example>; // ["id" | "name", number | string]
  */
-type IEntriesReturn<T> = [KeyOf<T>, IGetTypeFromKey<T, KeyOf<T>>];
+type TEntriesReturn<T> = [KeyOf<T>, TGetTypeFromKey<T, KeyOf<T>>];
 
 /**
  * Function type for removing circular references from an object.
@@ -197,7 +194,7 @@ type IEntriesReturn<T> = [KeyOf<T>, IGetTypeFromKey<T, KeyOf<T>>];
  * @example
  * const cleaned = removeCircularReferences(obj);
  */
-type IRemoveCicularReferences = Function<[string, any], any> ;
+type TRemoveCicularReferences = TFunction<[string, any], any> ;
 
 /**
  * Makes all properties of an object or array deeply optional.
@@ -212,24 +209,34 @@ type IRemoveCicularReferences = Function<[string, any], any> ;
  * type PartialExample = DeepPartial<Example>;
  * // { id?: number; nested?: { value?: string } }
  */
-type IDeepPartial<T> =
+type TDeepPartial<T> =
   T extends (...args: any[]) => any ? any :
-  T extends Array<infer U> ? Array<IDeepPartial<U>> :
+  T extends Array<infer U> ? Array<TDeepPartial<U>> :
   T extends object ? {
-    [K in keyof T]?: IDeepPartial<T[K]>|T[K]
+    [K in keyof T]?: TDeepPartial<T[K]>|T[K]
   } :
   T;
 
+type TAsKeys<
+  T,
+  Else = never
+> = T extends KeyOf ? T : Else;
+
+type TRecord<T, R> = T extends TAsKeys<T> ? { [key in T]: R } : { [key in KeyOf<T>]: R }
+
 export type {
-  ICommonFields as CommonFields,
-  IRemoveCicularReferences as RemoveCicularReferences,
-  IPrimitiveObject as PrimitiveObject,
-  IObject as Object,
-  IEntriesReturn as EntriesReturn,
-  IGetTypeFromKey as GetTypeFromKey,
-  IConcatStrIntoKeys as ConcatStrIntoKeys,
-  IKeysOfType as KeysOfType,
-  ICustomReturn as CustomReturn,
-  ILockedParams as LockedParams,
-  IDeepPartial as DeepPartial,
+  TCommonFields,
+  TRemoveCicularReferences,
+  TPrimitiveObject,
+  TObject,
+  TEntriesReturn,
+  TGetTypeFromKey,
+  TConcatStrIntoKeys,
+  TKeysOfType,
+  TCustomReturn,
+  TLockedParams,
+  TDeepPartial,
+  THasExactKey,
+  TAsKeys,
+  TRecord
 };
