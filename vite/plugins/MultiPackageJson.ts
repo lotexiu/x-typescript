@@ -7,18 +7,6 @@ import { buildPackageName, DIST_DIR, formatGroups, importPatterns, loadRootPacka
 /*───────────────────────────────────────────────
 │ Setup inicial
 ───────────────────────────────────────────────*/
-function cleanDist() {
-	const spinner = ora("Limpando diretório dist...").start();
-	try {
-		fs.removeSync(DIST_DIR);
-		fs.mkdirSync(DIST_DIR);
-		spinner.succeed("Diretório dist limpo com sucesso!");
-	} catch (err) {
-		spinner.fail("Falha ao limpar dist.");
-		logger.error(String(err));
-		process.exit(1);
-	}
-}
 
 function loadTsconfigAliases() {
 	const tsconfigPath = path.join(ROOT_DIR, "tsconfig.json");
@@ -141,9 +129,10 @@ function createPackageJson(files: string[], folder: string, aliasMap: any, rootP
 		template.version = rootPkg.version ?? "1.0.0";
 		template.license = rootPkg.license ?? "MIT";
 		template.repository.url += `/${folder}`;
-		template.keywords.push(folder);
+		template.keywords.push(template.author);
 		template.exports = generateExports(files.map(f => path.relative(`./src/${folder}`, f)));
 		template.dependencies = generateDependencies(files, folder, aliasMap, rootPkg);
+		template.keywords.push(...Object.keys(template.dependencies));
 		spinner.succeed(`package.json de ${folder} criado!`);
 		return template;
 	} catch (e) {
