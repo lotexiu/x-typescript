@@ -1,5 +1,5 @@
 import { TAsArray } from "@tsn-array/generic/types"
-import type { TAsKeys, TRecord } from "@tsn-object/generic/types"
+import type { TRecord } from "@tsn-object/generic/types"
 import type Color from "colorjs.io"
 import type { ColorTypes } from "colorjs.io"
 
