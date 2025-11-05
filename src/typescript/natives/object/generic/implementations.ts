@@ -1,9 +1,9 @@
-import type { AnyValue, Nullable } from "@ts/types";
-import type { TConcatStrIntoKeys, TCustomReturn, TEntriesReturn, TKeysOfType, TObject, TRemoveCicularReferences } from "./types";
-import type { KeyOf } from "./types.native";
+import type { TConcatStrIntoKeys, TEntriesReturn, TKeyOf, TObject, TRemoveCicularReferences } from "./types";
 import { _String } from "@tsn-string/generic/implementations";
 import type { TClazz } from "@tsn-class/generic/types";
 import { isNull } from "@ts/implementations";
+import { TFunction, TLambdaToFunction } from "@tsn-function/generic/types";
+import { GlobalDeclaration } from "@ts/global/types";
 
 
 export function isEmptyObj(obj: TObject): obj is {} {
@@ -26,43 +26,18 @@ export function circularReferenceHandler(): TRemoveCicularReferences {
   };
 }
 
-function makeObjectBasedOn<T extends (TClazz|AnyValue)>(value: T): T {
-  const obj = {} as T;
-  (Object.getOwnPropertyNames(value) as KeyOf<T>[])
-    .forEach((key: KeyOf<T>): void => {
-      obj[key] = value[key];
-    });
-  return obj;
-}
-
-function addPrefixToKeys<T extends TObject, Prefix extends string>(value: T, prefix: Prefix): TConcatStrIntoKeys<T, Prefix> {
+function addPrefixToKeys<
+  T extends TObject, 
+  Prefix extends string
+>(value: T, prefix: Prefix): TConcatStrIntoKeys<T, Prefix> {
+  type PrefixedKeys = TKeyOf<T, {extract:string}, true>;
   const obj: any = {};
-  (Object.getOwnPropertyNames(value) as KeyOf<T, string>[])
-    .forEach((key: KeyOf<T, string>): void => {
+  (Object.getOwnPropertyNames(value) as PrefixedKeys[])
+    .forEach((key: PrefixedKeys): void => {
       const newKey = `${prefix}${_String.capitalize(key)}`;
       obj[newKey] = value[key];
     });
   return obj as TConcatStrIntoKeys<T, Prefix>;
-}
-
-function copyValue<T extends (TClazz|AnyValue), Prefix extends Nullable<string, true> = null >(
-  value:T, 
-  prefixOnKeys?: Prefix,
-): TCustomReturn<Prefix,[
-  [string, TConcatStrIntoKeys<T, Prefix>],
-  [null|undefined, T]
-]> {
-  let copiedValue: any;
-  try {
-    copiedValue = structuredClone(value);
-  } catch {
-    copiedValue = makeObjectBasedOn(value);
-  }
-  if (isNull(prefixOnKeys, '')) {
-    return copiedValue;
-  }
-  copiedValue = addPrefixToKeys(copiedValue, prefixOnKeys);
-  return copiedValue;
 }
 
 function getValueFromPath(obj: any, path: string): any {
@@ -93,14 +68,10 @@ function removeNullFields<T extends object>(obj: T): Partial<T> {
     }, {} as Partial<T>);
 }
 
-function λ<T extends TObject, R>(value: T, functionName: TKeysOfType<T, Function>): R {
-  return ((...args: any): any => {
-    return (value[functionName] as Function)(...args);
-  }) as R;
-}
-
-function lambda<T extends TObject, R>(value: T, functionName: TKeysOfType<T, Function>): R {
-  return λ(value, functionName);
+function thisAsParameter<T extends TFunction>(fn: T): TLambdaToFunction<GlobalDeclaration<T>> {
+  return function(this: any, ...args: any[]): any {
+    return fn.call(null, this, ...args);
+  } as any;
 }
 
 function isAClassDeclaration<T>(obj: any): obj is TClazz<T> & T {
@@ -111,12 +82,11 @@ export const _Object = {
   isEmptyObj,
 	isAClassDeclaration,
 	circularReferenceHandler,
-	makeObjectBasedOn,
 	addPrefixToKeys,
-	copyValue,
 	getValueFromPath,
 	setValueFromPath,
 	removeNullFields,
-	lambda,
-	λ,
+  thisAsParameter
 };
+
+export type TUtilsObject = typeof _Object;

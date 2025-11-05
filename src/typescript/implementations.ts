@@ -1,4 +1,4 @@
-import type { Nullable } from "@ts/types";
+import type { TNullable } from "@ts/types";
 import { circularReferenceHandler } from "@tsn-object/generic/implementations";
 
 
@@ -6,7 +6,7 @@ export function json(obj: any): string {
   return JSON.stringify(obj, circularReferenceHandler());
 }
 
-export function isNull<T>(value: Nullable<T>, ...customNullValues: any[]): value is Nullable<null> {
+export function isNull<T>(value: TNullable<T>, ...customNullValues: any[]): value is TNullable<null> {
   const negatedValues = [0, '', false] as typeof value[];
   const jsonNullValues: string[] = customNullValues.map((v: any): string=> json(v));
   return (
@@ -16,7 +16,7 @@ export function isNull<T>(value: Nullable<T>, ...customNullValues: any[]): value
   );
 }
 
-export function isNullOrUndefined<T>(value: Nullable<T>): value is Nullable<null> {
+export function isNullOrUndefined<T>(value: TNullable<T>): value is TNullable<null> {
   return value == null || value == undefined;
 }
 

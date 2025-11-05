@@ -1,4 +1,4 @@
-type TConstructor<T> = new (...args: any[]) => T;
+type TConstructor<T=any> = new (...args: any[]) => T;
 
 type TPrototype<T> = {
   constructor: TConstructor<T>;

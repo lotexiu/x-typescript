@@ -43,21 +43,6 @@ type _IRecord<K extends keyof any, T> = Record<K, T>;
 type _IOmit<T, K extends keyof any> = Omit<T, K>;
 
 /**
- * Type that returns the keys of a type as a union of strings.
- *
- * @template T - The type of the object or class
- *
- * @example
- * interface Example {
- *   id: number;
- *   name: string;
- * }
- *
- * type Keys = KeyOf<Example>; // "id" | "name"
- */
-type IKeyOf<T=any, KeyType=null> = KeyType extends null ? keyof T : Extract<keyof T, KeyType>;
-
-/**
  * Makes all properties of T optional.
  *
  * @example
@@ -72,5 +57,4 @@ export type {
   _IRecord as Record,
   _IOmit as Omit,
   _IPartial as Partial,
-  IKeyOf as KeyOf,
 }

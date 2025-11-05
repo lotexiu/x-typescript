@@ -1,65 +1,37 @@
 import type { TFunction } from "@tsn-function/generic/types";
 import type { TPair } from "@tsn-array/generic/types";
-import type { Extends } from "@ts/types";
-import type { KeyOf, Pick } from "./types.native";
+import type { Pick } from "./types.native";
+import { As } from "@ts/types";
 
 type TCommonFields<T, U> = Pick<T, Extract<keyof T, keyof U>>;
 
 type TPrimitiveObject = {
-  [key: KeyOf]: any;
+  [key: TKeyOf]: any;
 } & Object
 
 /**
- * Negates the presence of a key in a mapped type.
- *
- * @template T - The object type to negate keys from.
+ * Converts each property of a type into a union of single-property objects.
+ * @template T - The object or class type
  *
  * @example
- * type Example = { a: number; b: string };
- * type Negated = INegate<Example>;
- * // Result: { b?: any } | { a?: any }
+ * interface Example {
+ *   id: number;
+ *   name: string;
+ * }
+ * type Unionized = Unionize<Example>;
+ * // Result: { id: number } | { name: string }
  */
-type INegate<T> = {
-  [K in KeyOf<T, string>]: {
-    [P in KeyOf<T, string>]?: P extends K ? never : any
+type TUnionize<T> = {
+  [Key in keyof T]: {
+    [Key2 in Key]: T[Key2];
   }
-}[KeyOf<T, string>];
+}[keyof T];
 
 type TObject<T=Object> =
   T extends Function ? never :
   T extends Array<any> ? never :
   T extends object ? T :
   never;
-
-
-/**
- * Restricts the fields that can be created in an object and their types.
- *
- * @template fieldType - The allowed field names (as string literal types).
- * @template valueType - The type of the values for each field (default: any).
- *
- * @example
- * type Fields = "field1" | "field2";
- *
- * // Valid usage:
- * const myObj: LockedParams<Fields, string> = {
- *   field1: "something",
- *   field2: "another thing"
- * };
- *
- * // Invalid usage (will cause TypeScript errors):
- * const myObj2: LockedParams<Fields, string> = {
- *   field1: "something",
- *   field2: 2, // Error: value must be string
- *   field3: "extra" // Error: field3 is not allowed
- * };
- *
- * // Result: Only the specified fields are allowed, and their values must match the specified type.
- */
-type TLockedParams<
-  fieldType,  
-  valueType = any                    
-> = Partial<Record<Extends<fieldType, string>, valueType>>
 
 /**
  * Maps a type to a set of return types based on a list of pairs.
@@ -85,7 +57,7 @@ type TCustomReturn <
 Type, 
 Returns extends TPair<any, any>[]
 > = {
-  [Return in KeyOf<Returns>]: 
+  [Return in TKeyOf<Returns>]: 
     Type extends Returns[Return][0] ?
       Returns[Return][1] :
       never
@@ -111,8 +83,8 @@ type TKeysOfType<
   Target, 
   Type
 > = {
-  [Key in KeyOf<Target>]: Target[Key] extends Type ? Key : never
-}[KeyOf<Target>]
+  [Key in TKeyOf<Target>]: Target[Key] extends Type ? Key : never
+}[TKeyOf<Target>]
 
 /**
  * Returns the key if it exists in the target and matches the type.
@@ -132,7 +104,7 @@ type TKeysOfType<
  */
 type THasExactKey <
   Target, 
-  Key extends KeyOf<Target>,
+  Key extends TKeyOf<Target>,
   Type extends Target[Key]
 > = Target[Key] extends Type ? Key : never
 
@@ -154,7 +126,7 @@ type THasExactKey <
  * // }
  */
 type TConcatStrIntoKeys<Base, Prefix extends string|null|undefined> = {
-  [Key in KeyOf<Base> as 
+  [Key in TKeyOf<Base> as 
     Key extends string ? `${Prefix}${Capitalize<Key>}`
     : never
   ]: Base[Key];
@@ -172,7 +144,7 @@ type TConcatStrIntoKeys<Base, Prefix extends string|null|undefined> = {
  * }
  * type IdType = GetTypeFromKey<Example, 'id'>; // number
  */
-type TGetTypeFromKey<T, K extends KeyOf<T>> = T[K];
+type TTypeFromKey<T, K extends TKeyOf<T>> = T[K];
 
 /**
  * Returns a tuple of [key, value] for an object or class.
@@ -186,7 +158,7 @@ type TGetTypeFromKey<T, K extends KeyOf<T>> = T[K];
  * }
  * type Entry = EntriesReturn<Example>; // ["id" | "name", number | string]
  */
-type TEntriesReturn<T> = [KeyOf<T>, TGetTypeFromKey<T, KeyOf<T>>];
+type TEntriesReturn<T> = [TKeyOf<T>, TTypeFromKey<T, TKeyOf<T>>];
 
 /**
  * Function type for removing circular references from an object.
@@ -220,9 +192,41 @@ type TDeepPartial<T> =
 type TAsKeys<
   T,
   Else = never
-> = T extends KeyOf ? T : Else;
+> = T extends TKeyOf ? T : Else;
 
-type TRecord<T, R> = T extends TAsKeys<T> ? { [key in T]: R } : { [key in KeyOf<T>]: R }
+type TRecord<T, R> = T extends TAsKeys<T> ? { [key in T]: R } : { [key in TKeyOf<T>]: R }
+
+type TKeyOfOptions<T> = TUnionize<{
+  extract?: keyof T,
+  exclude?: keyof T,
+}>
+
+/**
+ * Type that returns the keys of a type as a union of strings.
+ *
+ * @template T - The type of the object or class
+ *
+ * @example
+ * interface Example {
+ *   id: number;
+ *   name: string;
+ * }
+ *
+ * type Keys = KeyOf<Example>; // "id" | "name"
+ */
+type TKeyOf<
+  T=any, 
+  KeyType extends (TKeyOfOptions<WeakValidation extends true ? any : T>|null)=null,
+  WeakValidation extends boolean = true
+> = 
+  KeyType extends null 
+    ? keyof T 
+    : KeyType extends { extract: infer E }
+      ? Extract<keyof T, E & string>
+      : KeyType extends { exclude: infer Ex }
+        ? Exclude<keyof T, Ex & string>
+        : keyof T
+;
 
 export type {
   TCommonFields,
@@ -230,13 +234,14 @@ export type {
   TPrimitiveObject,
   TObject,
   TEntriesReturn,
-  TGetTypeFromKey,
+  TTypeFromKey,
   TConcatStrIntoKeys,
   TKeysOfType,
   TCustomReturn,
-  TLockedParams,
   TDeepPartial,
   THasExactKey,
   TAsKeys,
-  TRecord
+  TRecord,
+  TKeyOf,
+  TKeyOfOptions
 };

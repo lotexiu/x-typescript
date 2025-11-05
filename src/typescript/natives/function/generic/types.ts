@@ -54,6 +54,10 @@ type TReturnType<T extends (...args: any) => any> = ReturnType<T>;
  */
 type TInstanceType<T extends abstract new (...args: any) => any> = InstanceType<T>;
 
+
+type TLambdaToFunction<T> =
+  T extends (...args: infer A)=>infer R ? <T>(this: T, ...args: A) => R : never;
+
 export type { 
   TFunction,
   TNativeFunction,
@@ -62,4 +66,5 @@ export type {
   TReturnType,
   TInstanceType,
   TConstructorParameters,
+  TLambdaToFunction,
 }

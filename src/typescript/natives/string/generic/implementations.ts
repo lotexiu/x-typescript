@@ -1,3 +1,7 @@
+function toKebabCase(str: string): string {
+  return str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $.toLowerCase());
+}
+
 function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -52,4 +56,7 @@ export const _String = {
   removeCharacters,
   noAccent,
   stringToCharCodeArray,
+  toKebabCase,
 };
+
+export type TUtilsString = typeof _String;

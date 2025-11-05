@@ -1,18 +1,18 @@
-import type { Never } from "@ts/types";
+import type { TNever } from "@ts/types";
 
 /**
  * Returns the first element of an array.
  * @example
  * type FirstElement = First<[number, string, boolean]>; // number
  */
-type TFirst<T extends any[], _nv extends Never = never> = T extends [infer Rest, ...infer Last] ? Rest : _nv;
+type TFirst<T extends any[], _nv extends TNever = never> = T extends [infer Rest, ...infer Last] ? Rest : _nv;
 
 /**
  * Returns the last element of an array.
  * @example
  * type LastElement = Last<[number, string, boolean]>; // boolean
  */
-type TLast<T extends any[], _nv extends Never = never> = T extends [...infer Rest, infer Last] ? Last : _nv;
+type TLast<T extends any[], _nv extends TNever = never> = T extends [...infer Rest, infer Last] ? Last : _nv;
 
 /**
  * Represents an array type.
@@ -23,12 +23,12 @@ type TLast<T extends any[], _nv extends Never = never> = T extends [...infer Res
 type TArrayType<
   Types = any[],
   Inf extends boolean = false,
-  InfType = Never,
-  _nv extends Never = never
+  InfType = TNever,
+  _nv extends TNever = never
 > = [
   ...Types extends any[] ? Types : [Types],
   ...Inf extends true ? 
-    InfType extends Never ?
+    InfType extends TNever ?
       Types extends any[] ? 
         TLast<Types, _nv>[] : Types[] : 
       InfType[] : []

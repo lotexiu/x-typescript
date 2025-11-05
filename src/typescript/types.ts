@@ -1,9 +1,10 @@
-import type { Extract } from "@tsn/types";
+const _typeof = typeof '';
+type TTypeOfValue = typeof _typeof;
 
 /**
  * Type representing `null` or `never`.
  */
-type INever<T extends null|never = null> = T;
+type TNever<T extends null|never = null> = T;
 // type INever<T extends null|never = null> = T;
 
 /**
@@ -12,33 +13,21 @@ type INever<T extends null|never = null> = T;
  * @example
  * type NullableString = Nullable<string>; // string | null | undefined
  */
-type INullable<
+type TNullable<
   Type=any,
   NoVoid extends boolean = false
 > = NoVoid extends false ?
   Type | undefined | null | void :
   Type | undefined | null;
 
-type INotUndefined<T> = T extends undefined ? never : T;
+type TNotUndefined<T> = T extends undefined ? never : T;
 
-type IExtends<T, U, _nv extends INever=INever> = T extends U ? T&U : never;
-
-type IAnyType = Function;
-
-type IAnyValue<T=any> = T & Object
-
-type IIs<T,U> = Extract<T,U> extends never ? false : true;
-
-const _typeof = typeof '';
-type ITypeOfValue = typeof _typeof;
+type As<T,U> = T extends U ? T&U : never;
 
 export type { 
-  INever as Never, 
-  INullable as Nullable,
-  INotUndefined as NotUndefined,
-  IExtends as Extends,
-  IAnyType as AnyType,
-  IAnyValue as AnyValue,
-  IIs as Is,
-  ITypeOfValue as TypeOfValue
+  TNever,
+  TNullable,
+  TNotUndefined,
+  TTypeOfValue,
+  As,
 }
