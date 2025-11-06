@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
 
 import "@lotexiu/typescript/global";
-import { synthwaveTheme } from "./theme";
+import { darkReactTheme } from "./theme";
 import { ThemeUtils } from "@lotexiu/typescript/theme/utils";
 
 export default function App() {
-  // Aplica o tema uma única vez
-  console.log(synthwaveTheme)
-  ThemeUtils.applyThemeToDocument(synthwaveTheme);
+  ThemeUtils.applyThemeToDocument(
+    darkReactTheme
+    // lightReactTheme
+  );
 
   return (
     <div className="min-h-screen grid grid-cols-[240px_1fr]">
@@ -102,17 +102,17 @@ export default function App() {
               <input
                 type="text"
                 placeholder="Digite algo..."
-                className="mt-2 w-full rounded-md bg-background border border-input px-3 py-2 placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="mt-2 w-full rounded-md bg-background border border-input px-3 py-2 placeholder-bg-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
 
           {/* Radius showcase */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-muted text-mutedForeground p-4 rounded-sm">rounded-sm (radius-sm)</div>
-            <div className="bg-muted text-mutedForeground p-4 rounded-md">rounded-md (radius-md)</div>
-            <div className="bg-muted text-mutedForeground p-4 rounded-lg">rounded-lg (radius-lg)</div>
-            <div className="bg-muted text-mutedForeground p-4 rounded-xl">rounded-xl (radius-xl)</div>
+            <div className="bg-muted text-muted-foreground p-4 rounded-sm">rounded-sm (radius-sm)</div>
+            <div className="bg-muted text-muted-foreground p-4 rounded-md">rounded-md (radius-md)</div>
+            <div className="bg-muted text-muted-foreground p-4 rounded-lg">rounded-lg (radius-lg)</div>
+            <div className="bg-muted text-muted-foreground p-4 rounded-xl">rounded-xl (radius-xl)</div>
           </div>
         </section>
 

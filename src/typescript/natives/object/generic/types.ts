@@ -1,5 +1,5 @@
 import type { TFunction } from "@tsn-function/generic/types";
-import type { TPair } from "@tsn-array/generic/types";
+import type { TAsArray, TPair } from "@tsn-array/generic/types";
 import type { Pick } from "./types.native";
 import { As } from "@ts/types";
 
@@ -194,7 +194,12 @@ type TAsKeys<
   Else = never
 > = T extends TKeyOf ? T : Else;
 
-type TRecord<T, R> = T extends TAsKeys<T> ? { [key in T]: R } : { [key in TKeyOf<T>]: R }
+type TRecord<T, R> = 
+  T extends TAsKeys<T>
+    ? { [key in T]: R }
+    : T extends TAsArray<T>
+      ? { [key in TAsArray<T>[number]]: R }
+      : { [key in TKeyOf<T>]: R }
 
 type TKeyOfOptions<T> = TUnionize<{
   extract?: keyof T,
