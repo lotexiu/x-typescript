@@ -2,46 +2,51 @@ import { ThemeUtils } from "@ts/theme/utils"
 import Color from "colorjs.io"
 
 export const DefaultReactThemeBuilder = ThemeUtils.themeSchema(
-  ["background", "foreground", "primary", "accent"], {
-    error: ({accent})=> new Color("rgb(255,0,0)"),
-    warning: ({accent})=> new Color("rgb(255,150,0)"),
-    success: ({accent})=> new Color("rgb(0,255,0)"),
-    card: () => new Color("rgb(255,255,255)"),
-    popover: () => new Color("rgb(255,255,255)"),
-    secondary: () => new Color("rgb(255,255,255)"),
-    muted: () => new Color("rgb(255,255,255)"),
-    destructive: () => new Color("rgb(255,255,255)"),
-    border: () => new Color("rgb(255,255,255)"),
-    input: () => new Color("rgb(255,255,255)"),
-    ring: () => new Color("rgb(255,255,255)"),
-    radius: () => new Color("rgb(255,255,255)"),
-    chart1: () => new Color("rgb(255,255,255)"),
-    chart2: () => new Color("rgb(255,255,255)"),
-    chart3: () => new Color("rgb(255,255,255)"),
-    chart4: () => new Color("rgb(255,255,255)"),
-    chart5: () => new Color("rgb(255,255,255)"),
-    chart6: () => new Color("rgb(255,255,255)"),
-    sidebarBackground: () => new Color("rgb(255,255,255)"),
-    sidebarPrimary: () => new Color("rgb(255,255,255)"),
-    sidebarAccent: () => new Color("rgb(255,255,255)"),
-    sidebarBorder: () => new Color("rgb(255,255,255)"),
-    sidebarRing: () => new Color("rgb(255,255,255)"),
-    cardForeground: () => new Color("rgb(255,255,255)"),
-    popoverForeground: () => new Color("rgb(255,255,255)"),
-    primaryForeground: () => new Color("rgb(255,255,255)"),
-    secondaryForeground: () => new Color("rgb(255,255,255)"),
-    mutedForeground: () => new Color("rgb(255,255,255)"),
-    accentForeground: () => new Color("rgb(255,255,255)"),
-    destructiveForeground: () => new Color("rgb(255,255,255)"),
-    sidebarForeground: () => new Color("rgb(255,255,255)"),
-    sidebarPrimaryForeground: () => new Color("rgb(255,255,255)"),
-    sidebarAccentForeground: () => new Color("rgb(255,255,255)"),
-  }
-)
+  ["background", "foreground", "primary", "accent"],"background",
+  {
+    // Base
+    error: ({foreground})=> new Color("red").mix(foreground, 0.15, {space: 'lch'}),
+    warning: ({accent})=> new Color("orange").mix(accent, 0.2, {space: 'lch'}),
+    success: ({accent})=> new Color("rgb(0,220,80)").mix(accent, 0.2, {space: 'lch'}),
 
-export const DefaultReactTheme = DefaultReactThemeBuilder({
-  background: "rgb(25, 25, 25)",
-  foreground: "rgb(240, 240, 240)",
-  primary: "rgb(0, 120, 212)",
-  accent: "rgb(255, 165, 0)",
-})
+    card: ({background}) => new Color("white").mix(background, 0.9, {space: 'lch'}),
+    popover: ({background}) => new Color("white").mix(background, 0.8, {space: 'lch'}),
+    // Funcionais
+    secondary: ({primary, accent}) => primary.mix(accent, 0.5, {space: 'lch'}),
+    destructive: ({accent})=> new Color("red").mix(accent, 0.4, {space: 'lch'}),
+    muted: ({background, foreground}) => background.mix(foreground, 0.8, {space: 'lch'}),
+    border: ({primary, foreground}) => primary.mix(foreground, 0.1, {space: 'lch'}),
+    input: ({primary, foreground}) => primary.mix(foreground, 0.25, {space: 'lch'}),
+    ring: ({primary, foreground}) => primary.mix(foreground, 0.4, {space: 'lch'}),
+
+    // Charts (neon vibes)
+    "chart-1": ({background})=> new Color("#003f5c").mix(background, 0.3, {space: 'lch'}),
+    "chart-2": ({background})=> new Color("#444e86").mix(background, 0.3, {space: 'lch'}),
+    "chart-3": ({background})=> new Color("#955196").mix(background, 0.3, {space: 'lch'}),
+    "chart-4": ({background})=> new Color("#dd5182").mix(background, 0.3, {space: 'lch'}),
+    "chart-5": ({background})=> new Color("#ff6e54").mix(background, 0.3, {space: 'lch'}),
+    "chart-6": ({background})=> new Color("#ffa600").mix(background, 0.3, {space: 'lch'}),
+
+    // Sidebar
+    Sidebar: (c) => c.background.mix(c.primary, 0.2),
+    SidebarPrimary: (c) => c.primary.mix(c.accent, 0.3),
+    SidebarAccent: (c) => c.accent.mix(c.primary, 0.2),
+    SidebarBorder: (c) => c.foreground.mix(c.background, 0.8),
+    SidebarRing: (c) => c.accent.mix(c.foreground, 0.3),
+  }
+);
+
+
+export const darkReactTheme = DefaultReactThemeBuilder({
+  background: "rgb(40,0,60)",
+  foreground: "rgb(245,245,245)",
+  primary: "rgb(0,120,200)",
+  accent: "rgb(255,20,90)",
+});
+
+export const lightReactTheme = DefaultReactThemeBuilder({
+  background: "rgb(245, 247, 250)",
+  foreground: "rgb(28, 28, 30)",
+  primary: "rgb(0, 122, 255)",
+  accent: "rgb(255, 149, 0)",
+});

@@ -17,24 +17,25 @@ import { TObject, TRecord } from "@tsn-object/generic/types";
 function themeSchema<
   const K extends string[],
   R extends ThemeRule<K>
->(mainColors: K, rules: R): ThemeBuilder<K,R> {
+>(mainColors: K, backgroundKey: K[number], rules: R): ThemeBuilder<K,R> {
   return (colors: MainColors<any>): Theme<K, R> => {
     const colorsNotFounded = mainColors.filter((key => !(key in colors)));
     if (colorsNotFounded.length > 0) {
       throw new Error(`Missing main colors: ${colorsNotFounded.join(", ")}`);
     }
-    const theme: any = {};
+    const theme: Record<string, Color> = {};
     Object.entries(colors).forEach(([key, value]) => {
       theme[key] = new Color(value).to('lch');
     });
+    const darkTheme = theme[backgroundKey].l < 50;
     Object.entries(rules).forEach(([key, value]) => {
       if (typeof value === "function") {
-        theme[key] = new Color(value(theme)).to('lch');
+        theme[key] = new Color(value(theme as any, darkTheme)).to('lch'); /* Verificar validação de tema escuro e claro */
       } else {
         theme[key] = new Color(value).to('lch');
       }
     });
-    return theme;
+    return theme as any;
   }
 }
 
