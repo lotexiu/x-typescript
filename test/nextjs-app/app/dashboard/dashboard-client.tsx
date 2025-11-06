@@ -1,10 +1,12 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Monitor, Calendar, Clock, Shield, Activity } from 'lucide-react';
+import { getCookie, deleteCookie } from 'cookies-next';
 
 interface DashboardClientProps {
   user: {
@@ -23,24 +25,32 @@ interface DashboardClientProps {
 export default function DashboardClient({ user, session }: DashboardClientProps) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-      });
+      // cookies-next - apagar cookie no CLIENTE
+      // Apaga o cookie de sessão criado no login
+      deleteCookie('session_token', { path: '/' });
 
-      if (response.ok) {
-        router.push('/login');
-        router.refresh();
-      }
+      // Redireciona para a tela de login
+      router.push('/login');
+      router.refresh();
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     } finally {
       setIsLoggingOut(false);
     }
   };
+
+  useEffect(() => {
+    // cookies-next - ler cookie no CLIENTE
+    // Leitura simples do token para fins demonstrativos.
+    // Em apps reais, evite exibir tokens na UI e prefira httpOnly setado no servidor.
+    const t = getCookie('session_token');
+    setToken(typeof t === 'string' ? t : t?.toString() ?? null);
+  }, []);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('pt-BR');
@@ -143,6 +153,12 @@ export default function DashboardClient({ user, session }: DashboardClientProps)
               <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
               <p className="text-sm">Você está autenticado e sua sessão está ativa</p>
             </div>
+            {/* cookies-next - exibição do token (APENAS DEMO) */}
+            {token && (
+              <div className="text-xs break-all text-muted-foreground">
+                <span className="font-medium">session_token:</span> {token}
+              </div>
+            )}
             <Button 
               variant="outline" 
               onClick={() => router.push('/sessions')}
