@@ -2,7 +2,8 @@ import { _Global } from "./global/implementation"
 import { _String, TUtilsString } from "@tsn-string/generic/implementations"
 import { GlobalDeclaration } from "./global/types"
 import { _Object, TUtilsObject } from "@tsn-object/generic/implementations"
-import { TFunction, TLambdaToFunction } from "@tsn-function/generic/types"
+import { TFunction, TLambdaToFunction, TRebindedFunction } from "@tsn-function/generic/types"
+import { _Function } from "@tsn-function/generic/implementations"
 
 declare global {
   interface Number {
@@ -30,7 +31,10 @@ declare global {
   }
 
   interface Function {
-    thisAsParameter: <T extends TFunction>(this:T)=> TLambdaToFunction<GlobalDeclaration<T>>
+    context: any
+    args: any[] | undefined;
+    thisAsParameter<T extends TFunction>(this:T): TLambdaToFunction<GlobalDeclaration<T>>
+    rebind<T extends TFunction>(this: T, context: any, ...args: any[]): TRebindedFunction<T>
   }
 }
 
@@ -38,6 +42,10 @@ _Global.register(Function, {
   thisAsParameter: function(this) {
     return _Object.thisAsParameter(this);
   },
+  rebind: function(this: TFunction, context: any, ...args: any[]): TRebindedFunction<TFunction> {
+    const rebindedFunction = _Function.rebind(this);
+    return (rebindedFunction as any).__rebind(context, ...args);
+  } as any
 })
 
 _Global.register(String, {

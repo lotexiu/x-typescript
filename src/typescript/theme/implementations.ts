@@ -1,5 +1,5 @@
 import Color from "colorjs.io";
-import { TMainColors, TOppositeColorOptions, TTheme, TThemeBuilder, TThemeVariationsBuilder } from "./type";
+import { TMainColors, TOppositeColorOptions, TTheme, TThemeBuilder, TThemeVariationsBuilder } from "./types";
 import { TObject } from "@tsn-object/generic/types";
 
 /**

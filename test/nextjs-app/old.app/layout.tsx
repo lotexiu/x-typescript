@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Theme } from "./theme";
+import SessionWatcher from '@/components/session/SessionWatcher';
 import { cn } from "@/lib/utils";
-
 
 
 const geistSans = Geist({
@@ -33,7 +33,9 @@ export default function RootLayout({
         geistSans.variable,
         geistMono.variable,
         "antialiased bg-linear-to-br from-background to-accent/40"
-      )}>
+      )}
+      >
+        <SessionWatcher />
         {children}
       </body>
     </html>

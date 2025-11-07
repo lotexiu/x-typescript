@@ -18,13 +18,14 @@ export abstract class ReactBaseComponent<Props=any> {
 		
 
 		const proxy: this = proxyHandler(this, {
+			allProxy: true,
 			onChanges: this.onChanges.bind(this),
 			properties: {
 				props: {
 					onChanges: this.onPropsChange.bind(this) as any,
 				},
 				render: {
-					onGet(value) {return value.bind(this,proxy)},
+					onGet(value) {return value.bind(proxy)},
 				}
 			}
 		})
@@ -36,5 +37,9 @@ export abstract class ReactBaseComponent<Props=any> {
 	onChanges(property: Property<this>): void {}
 	onPropsChange(properties: Property<this['props']>): void {}
 
-	abstract render(component: this) : ReactNode;
+	/**
+	 * Render the component
+	 * Any changes on `this` will trigger onChanges
+	 */
+	abstract render() : ReactNode;
 }

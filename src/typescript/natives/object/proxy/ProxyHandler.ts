@@ -1,3 +1,4 @@
+import '@ts/global';
 import type { ProxyOptions } from "./types";
 
 function set<T extends object, P extends keyof T, V extends T[P]>(
@@ -44,7 +45,7 @@ function get<T extends object, P extends keyof T, V extends T[P]>(
 
 		switch (typeof value) {
 			case 'function':
-				if (isConfigurable) value = (value as any).bind(target);
+				if (isConfigurable) value = (value as any).rebind(target);
 				break;
 			case 'object':
 				if (isConfigurable && isProxyEnabled<T, P>(options, property)) {
@@ -60,7 +61,7 @@ function get<T extends object, P extends keyof T, V extends T[P]>(
 }
 
 function isProxyEnabled<T extends object, P extends keyof T>(options: ProxyOptions<T>, property: P) {
-	return options.properties?.[property]?.proxyVariable || options.properties?.[property]?.onChanges;
+	return  options.allProxy || options.properties?.[property]?.proxyVariable || options.properties?.[property]?.onChanges;
 }
 
 function deleteProperty<T, P extends keyof T, V extends T[P]>(
@@ -107,12 +108,12 @@ function proxyHandler<T extends object>(
 		get: (get as any).bind(null, options),
 		deleteProperty: (deleteProperty as any).bind(null, options),
 	});
-	(targetObj as any)[propertyVariable] = proxy;
+	(targetObj as any)[propertyVariable] = () => proxy;
 	return proxy
 }
 
 function getProxy<T>(obj: T): T {
-	return (obj as any)[propertyVariable] || obj;
+	return (obj as any)[propertyVariable]?.() || obj;
 }
 
 const propertyVariable = '__proxy__';

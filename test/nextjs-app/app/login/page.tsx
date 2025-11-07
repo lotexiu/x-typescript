@@ -1,13 +1,22 @@
-import { LoginForm } from '@/app/login/login-form';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { ReactWrapper } from "@lotexiu/react/components/implementations"
+import { ReactServerComponent } from "@lotexiu/react/components/ReactComponent/ReactServerComponent"
+import { ReactNode } from "react"
+import { SignIn } from "./client/SignIn"
+import { SignUp } from "./client/SignUp"
 
-export default function LoginPage() {
-  return (
-    <div className={cn(
-      "min-h-screen flex items-center justify-center",
-    )}>
-      <LoginForm />
-    </div>
-  );
-}
+
+const LoginPage = ReactWrapper(
+  class LoginPage extends ReactServerComponent {
+    
+    render(component: this): ReactNode {
+      return (
+        <div>
+          <SignIn></SignIn>
+          {/* <SignUp></SignUp> */}
+        </div>
+      )
+    }
+  }
+)
+
+export default LoginPage;

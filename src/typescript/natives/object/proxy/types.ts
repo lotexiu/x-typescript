@@ -10,9 +10,10 @@ interface Property<T, Key extends keyof T = keyof T> {
 type ProxyCallFunction<T,K extends keyof T> = (property: Property<T, K>) => void;
 
 type ProxyOptions<T> = {
+	allProxy?: boolean;
 	onChanges?: (property: Property<T>) => void;
 	properties?:{
-		[	K in keyof T ]?: 	{
+		[	K in keyof T ]?:	{
 			proxyVariable?: boolean;
 			onChanges?: (property: Property<T[K]>) => void;
 			onSet?: (value: any) => void;

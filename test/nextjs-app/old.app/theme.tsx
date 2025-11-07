@@ -1,35 +1,24 @@
 "use client";
 
+import "@lotexiu/typescript/global";
 import { DefaultReactThemes } from "@lotexiu/react/theme/implementations";
 import { ThemeUtils } from "@lotexiu/typescript/theme/utils";
 import { ReactNode, useEffect } from "react";
 import { ReactWrapper } from "@lotexiu/react/components/implementations";
 import { ReactClientComponent } from "@lotexiu/react/components/ReactComponent/ReactClientComponent";
-import { TTheme } from "@lotexiu/typescript/theme/types";
-import { Property } from "@lotexiu/typescript/natives/object/proxy/types";
+import { TTheme } from "@lotexiu/typescript/theme/type";
 
 
 export const Theme = ReactWrapper(
   class extends ReactClientComponent {
     setupHooks(): void {
-      const theme: TTheme = DefaultReactThemes.volcanic.dark
+      const theme: TTheme = DefaultReactThemes.synthwave.dark
       useEffect(() => {
         ThemeUtils.applyThemeToDocument(theme);
       });
     }
 
-    onChanges(property: Property<this, keyof this>): void {
-      // console.log(property)
-    }
-
-    render(): ReactNode {
-      function test(this: any, context: any) {
-        return (...args: any) => this.call(context, ...args);
-      }
-
-      // console.log(this) 
-      this.k = 1
-
+    render(component: this): ReactNode {
       return null;
     }
   }

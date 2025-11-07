@@ -2,22 +2,45 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({
+  className,
+  children,
+  id,
+  type,
+  disabled,
+  value,
+  onChange,
+  ...props 
+}: React.ComponentProps<"input">) {
   return (
-    <input
-      type={type}
-      data-slot="input"
+    <div 
+      id={id}
+      data-slot="input-wrapper" 
       className={cn(
-        "h-9 w-full min-w-0 px-3 py-1",
-        "selection:bg-primary selection:text-primary-foreground",
-        "file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
-        "placeholder:text-foreground bg-input/30 border-input rounded-md border text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "transition-[color,box-shadow]  flex",
+        "border border-input bg-input/30 px-3 py-1 rounded-md items-center gap-2 shadow-xs",
+        "focus-within:ring-2 focus-within:ring-ring/50 focus-within:border-ring",
         "aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className
-      )}
-      {...props}
-    />
+        "aria-disabled:opacity-60",
+      )} aria-disabled={disabled}
+    >
+      {children}
+      <input
+        id={`input-${id}`}
+        type={type}
+        data-slot="input"
+        onChange={(e)=> {value = e.target.value; onChange?.(e)}}
+        className={cn(
+          "disabled:pointer-events-none disabled:cursor-not-allowed grow w-0",
+          "bg-transparent outline-none rounded-sm",
+          "selection:text-primary-foreground selection:bg-primary",
+          "file:text-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
+          "placeholder:text-foreground",
+          className
+        )}
+        {...props}
+      />
+    </div>
   )
 }
 

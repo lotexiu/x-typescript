@@ -1,4 +1,4 @@
-import type { TArrayType } from "@tsn-array/generic/types";
+import type { TArrayType, TOptionalArray } from "@tsn-array/generic/types";
 
 /**
  * Represents a function type with specified argument and return types.
@@ -54,9 +54,37 @@ type TReturnType<T extends (...args: any) => any> = ReturnType<T>;
  */
 type TInstanceType<T extends abstract new (...args: any) => any> = InstanceType<T>;
 
+/**
+ * Represents optional parameters for a function type.
+ */
+type TOptionalParameters<T extends (...args: any) => any> = TOptionalArray<TParameters<T>>;
 
 type TLambdaToFunction<T> =
   T extends (...args: infer A)=>infer R ? <T>(this: T, ...args: A) => R : never;
+
+/**
+ * A function with the `bind` variable overridden, which uses the `context` variable as `thisArg`.
+ * @example
+ * function example(this: any, a: number, b: string): void {
+ *   console.log(this, a, b);
+ * }
+ * let rebinded = rebind(example).bind(42);
+ * rebinded("hello"); // output: (42, "hello", undefined)
+ * rebinded = rebind(example).bind({foo: "bar"});
+ * rebinded("world"); // output: ({foo: "bar"}, "world", undefined)
+ * console.log(rebinded.context); // output: {foo: "bar"}
+ */
+type TRebindedFunction<
+  T extends TFunction=TFunction
+> = { 
+  (...args: any[]): TReturnType<T>;
+  context: any
+  args: any[];
+  rebind<
+    const C1, 
+    A1 extends (TOptionalParameters<T>)
+  >(this: TRebindedFunction<T>, context: any, ...args: any[]): TRebindedFunction<T>;
+}
 
 export type { 
   TFunction,
@@ -67,4 +95,5 @@ export type {
   TInstanceType,
   TConstructorParameters,
   TLambdaToFunction,
+  TRebindedFunction,
 }

@@ -82,6 +82,10 @@ type TArray<T=any> = Array<T>
 
 type TAsArray<T> = T extends any[] ? T : never;
 
+type TOptionalArray<T extends any[]> = {
+  [K in keyof T]?: T[K];
+}
+
 export type { 
   TFirst,
   TLast,
@@ -93,4 +97,5 @@ export type {
   TItemType,
   TArray,
   TAsArray,
+  TOptionalArray,
 }
