@@ -19,14 +19,16 @@ function themeSchema<
   fontVariations: T2,
   validator?: (theme: TTheme<K, T1, T2>) => void
 ): TThemeBuilder<K,T1> {
-  return (colors: TMainColors<any>): TTheme<K, T1, T2> => {
+  return (colors: TMainColors<any>, validate?: boolean): TTheme<K, T1, T2> => {
     validateMainColors<K>(mainColors, colors);
     const theme: TTheme = mapMainColorsToTheme(colors);
     const darkTheme = theme[backgroundKey].lch.l < 50;
     processThemeDefinitions<T1, T2>(variations, theme, darkTheme, fontVariations);
     initializeThemeProperties<K, T1, T2>(theme, backgroundKey, mainColors, variations, fontVariations);
     checkVariationContrast(theme);
-    validator?.(theme as any);
+    if (validate){
+      validator?.(theme as any);
+    }
     return theme as any;
   }
 }

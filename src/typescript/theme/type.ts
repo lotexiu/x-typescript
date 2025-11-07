@@ -23,7 +23,7 @@ type TTheme<K=any, T1=any, T2=any> = TRecord<K, Color> & TRecord<T1, Color> & TR
  * @param mainColors - The main colors to use for the theme.
  * @returns The themed colors.
  */
-type TThemeBuilder<K, R = any> = (mainColors: TMainColors<K>) => TTheme<K, R>
+type TThemeBuilder<K, R = any> = (mainColors: TMainColors<K>, validate?: boolean) => TTheme<K, R>
 
 type TOppositeColorOptions = {
   l?: "full" | boolean,
