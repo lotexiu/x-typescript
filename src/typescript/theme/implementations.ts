@@ -25,8 +25,8 @@ function themeSchema<
     const darkTheme = theme[backgroundKey].lch.l < 50;
     processThemeDefinitions<T1, T2>(variations, theme, darkTheme, fontVariations);
     initializeThemeProperties<K, T1, T2>(theme, backgroundKey, mainColors, variations, fontVariations);
-    checkVariationContrast(theme);
     if (validate){
+      checkVariationContrast(theme);
       validator?.(theme as any);
     }
     return theme as any;
