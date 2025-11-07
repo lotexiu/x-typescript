@@ -171,13 +171,13 @@ export default function DashboardClient({ user, session }: DashboardClientProps)
         </Card>
 
         {/* Informações de Teste */}
-        <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-blue-900 dark:text-blue-100">
+            <CardTitle>
               ℹ️ Informações de Teste
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+          <CardContent className="text-sm  space-y-2">
             <p>✅ Esta página é protegida pelo middleware de autenticação</p>
             <p>✅ Apenas usuários autenticados podem acessá-la</p>
             <p>✅ As informações da sessão são armazenadas no servidor</p>

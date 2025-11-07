@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { setCookie } from 'cookies-next';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +26,7 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,22 +38,6 @@ export function LoginForm() {
 
       if (response.ok) {
         setSuccess(data.message);
-
-        // cookies-next - uso básico no CLIENTE
-        // 1) Criamos/atualizamos um cookie com o token retornado pela API
-        // - No cliente, NÃO podemos marcar httpOnly. Use httpOnly apenas do lado do servidor.
-        // - secure: verdadeiro em produção para enviar somente via HTTPS
-        // - sameSite/lifetime de exemplo para sessões simples
-        if (data?.token) {
-          setCookie('session_token', data.token, {
-            maxAge: 60 * 60, // 1h
-            path: '/',
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-          });
-        }
-
-        // 2) Redirecionamos para a página pretendida após criar o cookie
         router.push(redirectTo);
         router.refresh();
       } else {
