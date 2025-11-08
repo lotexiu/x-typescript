@@ -53,10 +53,16 @@ function generateExports(files: string[]) {
 		const relPath = `./${file}`;
 
 		switch (ext) {
-			case ".ts":
 			case ".tsx":
-			case ".js":
 			case ".jsx":
+				exportsObj[basePath] = {
+					import: `${basePath}.jsx`,
+					require: `${basePath}.jsx`,
+					types: `${basePath}.d.ts`,
+				};
+				break;
+			case ".ts":
+			case ".js":
 				exportsObj[basePath] = {
 					import: `${basePath}.js`,
 					require: `${basePath}.js`,
