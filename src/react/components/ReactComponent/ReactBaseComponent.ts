@@ -18,14 +18,14 @@ export abstract class ReactBaseComponent<Props=any> {
 		
 
 		const proxy: this = proxyHandler(this, {
-			allProxy: true,
+			allProxy: false,
 			onChanges: this.onChanges.bind(this),
 			properties: {
 				props: {
 					onChanges: this.onPropsChange.bind(this) as any,
 				},
 				render: {
-					onGet(value) {return value.bind(proxy)},
+					onGet(value) {return value.rebind(proxy)},
 				}
 			}
 		})

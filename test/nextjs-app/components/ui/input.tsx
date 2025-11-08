@@ -29,7 +29,7 @@ function Input({
         id={`input-${id}`}
         type={type}
         data-slot="input"
-        onChange={(e)=> {value = e.target.value; onChange?.(e)}}
+        onChange={onChange}
         className={cn(
           "disabled:pointer-events-none disabled:cursor-not-allowed grow w-0",
           "bg-transparent outline-none rounded-sm",

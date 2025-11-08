@@ -78,12 +78,8 @@ type TRebindedFunction<
   T extends TFunction=TFunction
 > = { 
   (...args: any[]): TReturnType<T>;
-  context: any
+  fn: any
   args: any[];
-  rebind<
-    const C1, 
-    A1 extends (TOptionalParameters<T>)
-  >(this: TRebindedFunction<T>, context: any, ...args: any[]): TRebindedFunction<T>;
 }
 
 export type { 

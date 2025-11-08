@@ -108,15 +108,8 @@ function proxyHandler<T extends object>(
 		get: (get as any).bind(null, options),
 		deleteProperty: (deleteProperty as any).bind(null, options),
 	});
-	(targetObj as any)[propertyVariable] = () => proxy;
 	return proxy
 }
-
-function getProxy<T>(obj: T): T {
-	return (obj as any)[propertyVariable]?.() || obj;
-}
-
-const propertyVariable = '__proxy__';
 
 export {
 	proxyHandler,
@@ -124,5 +117,4 @@ export {
 
 export type {
 	ProxyOptions,
-	getProxy,
 }

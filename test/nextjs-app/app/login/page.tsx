@@ -8,7 +8,7 @@ import { SignUp } from "./client/SignUp"
 const LoginPage = ReactWrapper(
   class LoginPage extends ReactServerComponent {
     
-    render(component: this): ReactNode {
+    render(): ReactNode {
       return (
         <div>
           <SignIn></SignIn>

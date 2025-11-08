@@ -31,7 +31,7 @@ declare global {
   }
 
   interface Function {
-    context: any
+    fn: TFunction | undefined;
     args: any[] | undefined;
     thisAsParameter<T extends TFunction>(this:T): TLambdaToFunction<GlobalDeclaration<T>>
     rebind<T extends TFunction>(this: T, context: any, ...args: any[]): TRebindedFunction<T>
@@ -43,8 +43,7 @@ _Global.register(Function, {
     return _Object.thisAsParameter(this);
   },
   rebind: function(this: TFunction, context: any, ...args: any[]): TRebindedFunction<TFunction> {
-    const rebindedFunction = _Function.rebind(this);
-    return (rebindedFunction as any).__rebind(context, ...args);
+    return _Function.rebind(this, context);
   } as any
 })
 

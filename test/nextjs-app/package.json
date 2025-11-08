@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@lotexiu/react": "^0.0.1-beta.10",
-    "@lotexiu/typescript": "^0.0.1-beta.10",
+    "@lotexiu/react": "^0.0.1-beta.12",
+    "@lotexiu/typescript": "^0.0.1-beta.12",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",

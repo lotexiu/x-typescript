@@ -12,24 +12,16 @@ import { Property } from "@lotexiu/typescript/natives/object/proxy/types";
 export const Theme = ReactWrapper(
   class extends ReactClientComponent {
     setupHooks(): void {
-      const theme: TTheme = DefaultReactThemes.volcanic.dark
+      const theme: TTheme = DefaultReactThemes.oceanic.dark
       useEffect(() => {
         ThemeUtils.applyThemeToDocument(theme);
       });
     }
 
     onChanges(property: Property<this, keyof this>): void {
-      // console.log(property)
     }
 
     render(): ReactNode {
-      function test(this: any, context: any) {
-        return (...args: any) => this.call(context, ...args);
-      }
-
-      // console.log(this) 
-      this.k = 1
-
       return null;
     }
   }
