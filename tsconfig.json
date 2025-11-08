@@ -6,6 +6,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ES2024", "DOM"],
+    "jsx": "react-jsx",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,

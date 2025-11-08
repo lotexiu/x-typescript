@@ -45,15 +45,15 @@ export const logger = {
 /*───────────────────────────────────────────────
 │ Funções utilitárias
 ───────────────────────────────────────────────*/
-export function getAllTSFiles(dir: string): string[] {
+export function getAllTSFiles(dir: string, exts: string[] = [".ts", ".tsx", ".d.ts"]) : string[] {
   const files = fs.readdirSync(dir);
   let tsFiles: string[] = [];
   for (const file of files) {
     const fullPath = path.join(dir, file);
     const stat = fs.statSync(fullPath);
     if (stat.isDirectory()) {
-      tsFiles = tsFiles.concat(getAllTSFiles(fullPath));
-    } else if (file.endsWith(".ts")) {
+      tsFiles = tsFiles.concat(getAllTSFiles(fullPath, exts));
+    } else if (exts.some(ext => file.endsWith(ext))) {
       tsFiles.push(fullPath);
     }
   }
